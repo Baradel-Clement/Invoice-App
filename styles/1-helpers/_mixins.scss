@@ -1,0 +1,14 @@
+@mixin flex ($display: flex, $flow: row nowrap, $justify: flex-start, $align: flex-start) {
+    display: $display;
+    flex-flow: $flow;
+    justify-content: $justify;
+    align-items: $align;
+}
+
+@mixin absolute-el ($top, $right, $bottom, $left) {
+    position: absolute;
+    top: $top;
+    right: $right;
+    bottom: $bottom;
+    left: $left;
+}
