@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { useRouter } from "next/router";
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import Header from '../components/Header';
 
 const createInvoice = async (total, session) => {
   let invoice = {
@@ -33,24 +34,7 @@ const Home = () => {
     <div className='Home'>
       {
         status === 'authenticated' && (
-          <>
-            <div className="auth-info pr-2">
-              <p>Hi, {session.user.name}</p>
-            </div>
-            <div className="dropdown">
-              <ul className="dropdown-list">
-                <li className="dropdown-item">
-                  <button onClick={() => signOut()} className="cta">
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
-            <br />
-            <br />
-            <br />
-            <button type='button' onClick={() => createInvoice(1111.11, session)}>createInvoice</button>
-          </>
+          <Header />
         )
       }
       {

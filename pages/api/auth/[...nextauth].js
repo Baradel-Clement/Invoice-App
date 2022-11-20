@@ -26,8 +26,6 @@ export default NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async session({ session, token, user }) {
-      console.log("{ session, token, user }")
-      console.log({ session, token, user })
       const indexAt = user.email.indexOf('@');
       const newName = user.email.slice(0, indexAt);
       session.user.id = user.id;

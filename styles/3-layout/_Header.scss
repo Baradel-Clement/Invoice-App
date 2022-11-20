@@ -1,0 +1,18 @@
+.Header {
+  width: 60%;
+  height: 59px;
+  @extend %flex-between-start;
+}
+
+.Header-left {
+  @extend %flex-between-start;
+  flex-flow: column;
+  height: 100%;
+}
+
+.Header-filter {
+  width: 159px;
+  @extend %flex-between-center;
+  margin-top: 22px;
+  cursor: pointer;
+}
