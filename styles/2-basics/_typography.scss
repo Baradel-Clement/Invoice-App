@@ -12,12 +12,25 @@
     font-style: normal;
 }
 
-body {
+body, button {
     font-family: "Spartan", Courier, monospace;
     color: $black;
-    font-size: 132px;
 }
 
 .bold {
     font-weight: bold;
+}
+
+.XL {
+    font-size: 26px;
+}
+.M {
+    font-size: 16px;
+}
+
+.true-lavender {
+    color: $true-lavender;
+}
+.violet {
+    color: $violet;
 }

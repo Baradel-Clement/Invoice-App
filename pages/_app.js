@@ -1,11 +1,17 @@
 import Layout from '../components/Layout';
+import { StateContext } from '../context/StateContext';
+import { SessionProvider } from 'next-auth/react';
 import '../styles/index.scss'
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <SessionProvider session={session}>
+      <StateContext>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </StateContext>
+    </SessionProvider>
   )
 }
 

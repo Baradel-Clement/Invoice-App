@@ -1,0 +1,49 @@
+.Sidebar {
+  @extend %flex-between-center;
+  flex-flow: column;
+  width: 7.7%;
+  max-width: 103px;
+  background-color: $black;
+  height: 100vh;
+  border-radius: 0px 20px 20px 0px;
+}
+
+.Sidebar-logo {
+  background-color: $violet;
+  width: 100%;
+  border-radius: 0px 20px 0px 0px;
+  @extend %flex-center-center;
+  height: 103px;
+  position: relative;
+  z-index: 0;
+
+  img {
+    width: 40px;
+    height: 38px;
+    z-index: 2;
+    position: relative;
+  }
+
+  .shape {
+    position: absolute;
+    width: 100%;
+    border-radius: 20px 0px 0px 0px;
+    background-color: $light-violet;
+    height: 50%;
+    bottom: 0px;
+    z-index: 1;
+  }
+}
+
+.Sidebar-profile {
+  border-top: 1px #494E6E solid;
+  @extend %flex-center-center;
+  height: 88px;
+  width: 100%;
+
+  img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+}

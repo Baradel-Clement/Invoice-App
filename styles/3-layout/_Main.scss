@@ -1,0 +1,11 @@
+.Layout {
+  @extend %flex-between-center;
+  flex-flow: row;
+  background-color: $white;
+}
+
+.Main {
+  width: 92.3%;
+  position: relative;
+  @extend %flex-center-center;
+}

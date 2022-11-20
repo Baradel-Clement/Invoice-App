@@ -1,0 +1,29 @@
+.Login {
+  width: 480px;
+  background-color: white;
+  border-radius: 20px;
+  @extend %flex-center-center;
+  flex-flow: column;
+  padding: 40px;
+
+  form {
+    @extend %flex-center-start;
+    flex-flow: column;
+    width: 70%;
+    margin-top: 30px;
+
+    input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid $stoic-white;
+      border-radius: 4px;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+
+    button {
+      width: 100%;
+    }
+    
+  }
+}
