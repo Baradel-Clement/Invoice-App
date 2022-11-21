@@ -8,11 +8,46 @@
   @extend %flex-between-start;
   flex-flow: column;
   height: 100%;
+
+  h2 {
+    letter-spacing: -1px;
+  }
 }
 
 .Header-filter {
-  width: 159px;
-  @extend %flex-between-center;
   margin-top: 22px;
-  cursor: pointer;
+  position: relative;
+
+  .trigger {
+    cursor: pointer;
+    position: relative;
+    @extend %flex-between-center;
+    width: 159px;
+
+    img.reverse {
+      transform: rotate(180deg);
+    }
+  }
+
+  .form {
+    position: absolute;
+    bottom: -150px;
+    right: 50%;
+    transform: translateX(50%);
+    background-color: white;
+    border-radius: 8px;
+    width: 240px;
+    height: 140px;
+    padding-left: 24px;
+    box-shadow: 0px 10px 20px rgba(72, 84, 159, 0.25);
+    @extend %flex-center-start;
+    flex-flow: column;
+
+    span.MuiTypography-root.MuiFormControlLabel-label {
+      font-size: 15px;
+      font-weight: bold;
+      font-family: "Spartan", Courier, monospace !important;
+      letter-spacing: -0.25px;
+    }
+  }
 }

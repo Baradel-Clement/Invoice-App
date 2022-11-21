@@ -13,8 +13,9 @@
 }
 
 body, button {
-    font-family: "Spartan", Courier, monospace;
+    font-family: "Spartan", Courier, monospace !important;
     color: $black;
+    letter-spacing: 0.25px;
 }
 
 .bold {

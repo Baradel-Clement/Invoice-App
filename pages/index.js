@@ -24,11 +24,11 @@ const createInvoice = async (total, session) => {
 const Home = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
-   useEffect(() => {
-     if (status === 'unauthenticated') {
-       router.replace("/login")
-     } 
-   })
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.replace("/login")
+    }
+  })
 
   return (
     <div className='Home'>
