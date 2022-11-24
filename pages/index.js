@@ -4,23 +4,6 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Header from '../components/Header';
 
-const createInvoice = async (total, session) => {
-  let invoice = {
-    total,
-    userId: session.user.id
-  };
-  let res = await fetch("api/invoice", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(invoice)
-  })
-
-  const newInvoice = await res.json();
-  console.log("Create successful", { newInvoice });
-  // add to invoices list (global context state)
-  // setinvoices({ invoice: newinvoice, type: "add" });
-}
-
 const Home = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -34,7 +17,9 @@ const Home = () => {
     <div className='Home'>
       {
         status === 'authenticated' && (
-          <Header />
+          <>
+            <Header />
+          </>
         )
       }
       {

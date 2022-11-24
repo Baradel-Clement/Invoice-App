@@ -12,7 +12,7 @@
     font-style: normal;
 }
 
-body, button {
+body, button, input {
     font-family: "Spartan", Courier, monospace !important;
     color: $black;
     letter-spacing: 0.25px;
@@ -34,10 +34,19 @@ body, button {
 .S {
     font-size: 13px;
 }
+.XS {
+    font-size: 10px;
+}
 
 .true-lavender {
     color: $true-lavender;
 }
 .violet {
     color: $violet;
+}
+.grey {
+    color: $grey;
+}
+.red {
+    color: $red;
 }

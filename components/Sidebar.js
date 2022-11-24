@@ -17,6 +17,7 @@ const Sidebar = () => {
         <Image
           src={profilePic}
           alt="profilePic"
+          priority
         />
       </div>
     </div>

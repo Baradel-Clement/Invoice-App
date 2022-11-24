@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState } from 'react';
 
-const Context = createContext();
+const HomeContext = createContext();
 
-export const StateContext = ({ children }) => {
+export const HomeStateContext = ({ children }) => {
   const [statusFilter, setStatusFilter] = useState(false);
-  const [statusFilterValue, setStatusFilterValue] = useState(['Draft', 'Paid'])
-
+  const [statusFilterValue, setStatusFilterValue] = useState(['Draft', 'Paid']);
+  
   const onChangeStatusFilterValue = (filterName) => {
     const newArray = [];
     if (statusFilterValue.includes(filterName)) {
@@ -25,16 +25,16 @@ export const StateContext = ({ children }) => {
   }
 
   return (
-    <Context.Provider
-    value={{
-      statusFilter,
-      setStatusFilter,
-      statusFilterValue,
-      onChangeStatusFilterValue
-    }}>
+    <HomeContext.Provider
+      value={{
+        statusFilter,
+        setStatusFilter,
+        statusFilterValue,
+        onChangeStatusFilterValue
+      }}>
       {children}
-    </Context.Provider>
+    </HomeContext.Provider>
   )
 }
 
-export const useStateContext = () => useContext(Context);
+export const useHomeStateContext = () => useContext(HomeContext);

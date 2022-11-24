@@ -51,10 +51,27 @@ model User {
 }
 
 model Invoice {
-  id     String  @id @default(auto()) @map("_id") @db.ObjectId
-  total  Float
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                   String    @id @default(auto()) @map("_id") @db.ObjectId
+  displayId            String?
+  personalStreetAdress String?
+  personalCity         String?
+  personalPostCode     String?
+  personalCountry      String?
+  clientName           String?
+  clientEmail          String?
+  clientStreetAdress   String?
+  clientCity           String?
+  clientPostCode       String?
+  clientCountry        String?
+  invoiceDate          DateTime?
+  paymentTerms         Int?
+  description          String?
+  items                Json?
+  total                Float?
+  status               String?
+  createdAt            DateTime  @default(now())
+  userId               String?
+  user                 User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([id, userId])
 }

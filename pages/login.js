@@ -1,7 +1,17 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { getCsrfToken } from "next-auth/react"
+import { useSession } from 'next-auth/react';
+import { useRouter } from "next/router";
 
 export default function Login({ csrfToken }) {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  useEffect(() => {
+    console.log('useefect')
+    if (status === 'authenticated') {
+      router.replace("/")
+    }
+  })
   return (
     <div className="Login">
     <p className="bold XL violet">Login</p>

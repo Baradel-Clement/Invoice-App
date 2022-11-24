@@ -53,6 +53,12 @@
     align-items: flex-end;
   }
 
+  %flex-end-center {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
   %back-image {
     background-size: cover;
     background-repeat: no-repeat;

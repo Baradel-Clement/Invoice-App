@@ -10,6 +10,10 @@
   z-index: 0;
   align-self: center;
 
+  &:hover {
+    background-color: $light-violet;
+  }
+
   span {
     position: absolute;
     z-index: 1;
@@ -37,6 +41,46 @@
   border-radius: 24px;
   color: white;
   padding: 16px 23px;
+
+  &:hover {
+    background-color: $light-violet;
+  }
+}
+
+.button3 {
+  padding: 16px 23px;
+  height: 48px;
+  background-color: #F9FAFE;
+  border-radius: 24px;
+
+  &:hover {
+    background-color: $stoic-white;
+  }
+}
+
+.button4 {
+  padding: 16px 23px;
+  height: 48px;
+  background-color: #373B53;
+  border-radius: 24px;
+
+  &:hover {
+    background-color: $black2;
+  }
+}
+
+.button6 {
+  width: 100%;
+  border-radius: 24px;
+  height: 48px;
+  background-color: #F9FAFE;
+
+  &:hover {
+    background-color: $stoic-white;
+  }
+  &.error {
+    border: 1px solid $red;
+  }
 }
 
 .radiusoff {

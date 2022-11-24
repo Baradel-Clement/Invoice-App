@@ -15,10 +15,26 @@ export const getInvoiceById = async (id) => {
 }
 
 // CREATE
-export const createInvoice = async (total, session) => {
+export const createInvoice = async (reqBody, session) => {
   const newInvoice = await prisma.invoice.create({
     data: {
-      total,
+      displayId: reqBody.displayId,
+      personalStreetAdress: reqBody.personalStreetAdress,
+      personalCity: reqBody.personalCity,
+      personalPostCode: reqBody.personalPostCode,
+      personalCountry: reqBody.personalCountry,
+      clientName: reqBody.clientName,
+      clientEmail: reqBody.clientEmail,
+      clientStreetAdress: reqBody.clientStreetAdress,
+      clientCity: reqBody.clientCity,
+      clientPostCode: reqBody.clientPostCode,
+      clientCountry: reqBody.clientCountry,
+      invoiceDate: reqBody.invoiceDate,
+      paymentTerms: reqBody.paymentTerms,
+      description: reqBody.description,
+      items: reqBody.items,
+      total: reqBody.total,
+      status: reqBody.status,
       user: { connect: { email: session?.user?.email } }, // Connect the new invoice to an existing User with the email provided
     },
   });

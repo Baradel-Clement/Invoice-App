@@ -7,9 +7,9 @@ export default async function handle(req, res) {
 
   if (req.method === 'POST') {
     // Get invoice total from the request body
-    const { total } = req.body;
+    const { clientCity } = req.body;
     // Create a new invoice
-    const newInvoice = await createInvoice(total, session);
+    const newInvoice = await createInvoice(req.body, session);
 
     return res.json(newInvoice);
   }

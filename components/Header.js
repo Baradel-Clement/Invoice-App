@@ -3,14 +3,16 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import arrowDown from '../public/assets/icon-arrow-down.svg';
 import plus from '../public/assets/icon-plus.svg';
-import { useStateContext } from '../context/StateContext';
+import { useInvoiceFormStateContext } from '../context/InvoiceForm';
+import { useHomeStateContext } from '../context/Home';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
 
 const Header = () => {
   const { data: session } = useSession();
-  const { statusFilter, setStatusFilter, statusFilterValue, onChangeStatusFilterValue } = useStateContext();
+  const { invoiceForm, setInvoiceForm } = useInvoiceFormStateContext();
+  const { statusFilter, setStatusFilter, statusFilterValue, onChangeStatusFilterValue } = useHomeStateContext();
 
   return (
     <div className='Header'>
@@ -64,7 +66,7 @@ const Header = () => {
         }
 
       </div>
-      <button type="button" className='button button1'>
+      <button type="button" className='button button1' onClick={() => setInvoiceForm({ ...invoiceForm, open: true })}>
         <span />
         <Image src={plus} alt="plus" />
         <p className='bold S'>New Invoice</p>
