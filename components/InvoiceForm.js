@@ -14,6 +14,7 @@ import { useSession } from 'next-auth/react';
 import { generateInvoiceDisplayId } from '../utils/invoiceForm';
 import iconDelete from '../public/assets/icon-delete.svg';
 import iconDeleteHover from '../public/assets/icon-delete-hover.svg';
+import { useHomeStateContext } from '../context/Home';
 
 const getTotalPrice = (quantity, price) => {
   if (price === '') {
@@ -113,6 +114,7 @@ function CustomSelect(props) {
 
 const InvoiceForm = () => {
   const { invoiceForm, setInvoiceForm, invoiceFormBillFrom, invoiceFormBillTo, onChangeInvoiceFormBillFrom, onChangeInvoiceFormBillTo, invoiceFormItemList, onChangeInvoiceFormItemList, deleteInvoiceFormItem, addInvoiceFormItem, cleanInvoiceForm, invoiceFormFieldErrors, checkFormErrors } = useInvoiceFormStateContext();
+  const { invoices, setInvoices } = useHomeStateContext();
   const [iconDeleteHovering, setIconDeleteHovering] = useState(0);
   const { data: session, status } = useSession();
 
@@ -155,8 +157,12 @@ const InvoiceForm = () => {
 
     const newInvoice = await res.json();
     console.log("Create successful", { newInvoice });
-    // add to invoices list (global context state)
-    // setinvoices({ invoice: newinvoice, type: "add" });
+    
+    const newInvoices = [];
+    invoices.forEach((invoice) => newInvoices.push(invoice));
+    newInvoices.push(newInvoice[0]);
+    setInvoices(newInvoices);
+    cleanInvoiceForm();
   }
 
   return (
@@ -170,23 +176,23 @@ const InvoiceForm = () => {
             <div className='input fullwidth'>
               <label className={`${invoiceFormFieldErrors.includes('personal_street_adress') ? 'red' : 'true-lavender'} S`} htmlFor='street_adress'>Street Adress</label>
               <input onChange={(e) => onChangeInvoiceFormBillFrom(e.target.name, e.target.value)} value={invoiceFormBillFrom.street_adress} className={`${invoiceFormFieldErrors.includes('personal_street_adress') ? 'error' : ''} bold S`} id="personal_street_adress" name="street_adress" />
-              {invoiceFormFieldErrors.includes('personal_street_adress') && <p className='error XS red'>can't be empty</p>}
+              {invoiceFormFieldErrors.includes('personal_street_adress') && <p className='error XXS red'>can't be empty</p>}
             </div>
             <div className='input-localisation'>
               <div className='input'>
                 <label className={`${invoiceFormFieldErrors.includes('personal_city') ? 'red' : 'true-lavender'} S`} htmlFor='city'>City</label>
                 <input onChange={(e) => onChangeInvoiceFormBillFrom(e.target.name, e.target.value)} value={invoiceFormBillFrom.city} className={`${invoiceFormFieldErrors.includes('personal_city') ? 'error' : ''} bold S`} id="personal_city" name="city" />
-                {invoiceFormFieldErrors.includes('personal_city') && <p className='error XS red'>can't be empty</p>}
+                {invoiceFormFieldErrors.includes('personal_city') && <p className='error XXS red'>can't be empty</p>}
               </div>
               <div className='input'>
                 <label className={`${invoiceFormFieldErrors.includes('personal_post_code') ? 'red' : 'true-lavender'} S`} htmlFor='post_code'>Post Code</label>
                 <input onChange={(e) => onChangeInvoiceFormBillFrom(e.target.name, e.target.value)} value={invoiceFormBillFrom.post_code} className={`${invoiceFormFieldErrors.includes('personal_post_code') ? 'error' : ''} bold S`} id="personal_post_code" name="post_code" />
-                {invoiceFormFieldErrors.includes('personal_post_code') && <p className='error XS red'>can't be empty</p>}
+                {invoiceFormFieldErrors.includes('personal_post_code') && <p className='error XXS red'>can't be empty</p>}
               </div>
               <div className='input'>
                 <label className={`${invoiceFormFieldErrors.includes('personal_country') ? 'red' : 'true-lavender'} S`} htmlFor='country'>Country</label>
                 <input onChange={(e) => onChangeInvoiceFormBillFrom(e.target.name, e.target.value)} value={invoiceFormBillFrom.country} className={`${invoiceFormFieldErrors.includes('personal_country') ? 'error' : ''} bold S`} id="personal_country" name="country" />
-                {invoiceFormFieldErrors.includes('personal_country') && <p className='error XS red'>can't be empty</p>}
+                {invoiceFormFieldErrors.includes('personal_country') && <p className='error XXS red'>can't be empty</p>}
               </div>
             </div>
           </div>
@@ -195,33 +201,33 @@ const InvoiceForm = () => {
             <div className='input fullwidth'>
               <label className={`${invoiceFormFieldErrors.includes('client_name') ? 'red' : 'true-lavender'} S`} htmlFor='name'>Client's Name</label>
               <input onChange={(e) => onChangeInvoiceFormBillTo(e.target.name, e.target.value)} value={invoiceFormBillTo.name} className={`${invoiceFormFieldErrors.includes('client_name') ? 'error' : ''} bold S`} id="client_name" name="name" />
-              {invoiceFormFieldErrors.includes('client_name') && <p className='error XS red'>can't be empty</p>}
+              {invoiceFormFieldErrors.includes('client_name') && <p className='error XXS red'>can't be empty</p>}
             </div>
             <div className='input fullwidth'>
               <label className={`${invoiceFormFieldErrors.includes('client_email') ? 'red' : 'true-lavender'} S`} htmlFor='email'>Client's email</label>
               <input onChange={(e) => onChangeInvoiceFormBillTo(e.target.name, e.target.value)} value={invoiceFormBillTo.email} className={`${invoiceFormFieldErrors.includes('client_email') ? 'error' : ''} bold S`} id="client_email" name="email" />
-              {invoiceFormFieldErrors.includes('client_email') && <p className='error XS red'>can't be empty</p>}
+              {invoiceFormFieldErrors.includes('client_email') && <p className='error XXS red'>can't be empty</p>}
             </div>
             <div className='input fullwidth'>
               <label className={`${invoiceFormFieldErrors.includes('client_street_adress') ? 'red' : 'true-lavender'} S`} htmlFor='street_adress'>Street Adress</label>
               <input onChange={(e) => onChangeInvoiceFormBillTo(e.target.name, e.target.value)} value={invoiceFormBillTo.street_adress} className={`${invoiceFormFieldErrors.includes('client_street_adress') ? 'error' : ''} bold S`} id="client_street_adress" name="street_adress" />
-              {invoiceFormFieldErrors.includes('client_street_adress') && <p className='error XS red'>can't be empty</p>}
+              {invoiceFormFieldErrors.includes('client_street_adress') && <p className='error XXS red'>can't be empty</p>}
             </div>
             <div className='input-localisation'>
               <div className='input'>
                 <label className={`${invoiceFormFieldErrors.includes('client_city') ? 'red' : 'true-lavender'} S`} htmlFor='city'>City</label>
                 <input onChange={(e) => onChangeInvoiceFormBillTo(e.target.name, e.target.value)} value={invoiceFormBillTo.city} className={`${invoiceFormFieldErrors.includes('client_city') ? 'error' : ''} bold S`} id="client_city" name="city" />
-                {invoiceFormFieldErrors.includes('client_city') && <p className='error XS red'>can't be empty</p>}
+                {invoiceFormFieldErrors.includes('client_city') && <p className='error XXS red'>can't be empty</p>}
               </div>
               <div className='input'>
                 <label className={`${invoiceFormFieldErrors.includes('client_post_code') ? 'red' : 'true-lavender'} S`} htmlFor='post_code'>Post Code</label>
                 <input onChange={(e) => onChangeInvoiceFormBillTo(e.target.name, e.target.value)} value={invoiceFormBillTo.post_code} className={`${invoiceFormFieldErrors.includes('client_post_code') ? 'error' : ''} bold S`} id="client_post_code" name="post_code" />
-                {invoiceFormFieldErrors.includes('client_post_code') && <p className='error XS red'>can't be empty</p>}
+                {invoiceFormFieldErrors.includes('client_post_code') && <p className='error XXS red'>can't be empty</p>}
               </div>
               <div className='input'>
                 <label className={`${invoiceFormFieldErrors.includes('client_country') ? 'red' : 'true-lavender'} S`} htmlFor='country'>Country</label>
                 <input onChange={(e) => onChangeInvoiceFormBillTo(e.target.name, e.target.value)} value={invoiceFormBillTo.country} className={`${invoiceFormFieldErrors.includes('client_country') ? 'error' : ''} bold S`} id="client_country" name="country" />
-                {invoiceFormFieldErrors.includes('client_country') && <p className='error XS red'>can't be empty</p>}
+                {invoiceFormFieldErrors.includes('client_country') && <p className='error XXS red'>can't be empty</p>}
               </div>
             </div>
             <div className='input-date'>
@@ -237,7 +243,7 @@ const InvoiceForm = () => {
                     renderInput={(params) => <TextField {...params} />}
                   />
                 </LocalizationProvider>
-                {invoiceFormFieldErrors.includes('client_invoice_date') && <p className='error XS red'>can't be empty</p>}
+                {invoiceFormFieldErrors.includes('client_invoice_date') && <p className='error XXS red'>can't be empty</p>}
               </div>
               <div className='input'>
                 <p className='true-lavender S'>Payment Terms</p>
@@ -252,8 +258,8 @@ const InvoiceForm = () => {
             </div>
             <div className='input fullwidth'>
               <label className={`${invoiceFormFieldErrors.includes('client_project_description') ? 'red' : 'true-lavender'} S`} htmlFor='project_description'>Project Description</label>
-              <input onChange={(e) => onChangeInvoiceFormBillFrom(e.target.name, e.target.value)} value={invoiceFormBillTo.project_description} className={`${invoiceFormFieldErrors.includes('client_project_description') ? 'error' : ''} bold S`} id="client_project_description" name="project_description" />
-              {invoiceFormFieldErrors.includes('client_project_description') && <p className='error XS red'>can't be empty</p>}
+              <input onChange={(e) => onChangeInvoiceFormBillTo(e.target.name, e.target.value)} value={invoiceFormBillTo.project_description} className={`${invoiceFormFieldErrors.includes('client_project_description') ? 'error' : ''} bold S`} id="client_project_description" name="project_description" />
+              {invoiceFormFieldErrors.includes('client_project_description') && <p className='error XXS red'>can't be empty</p>}
             </div>
           </div>
           <div className='InvoiceForm-items'>
@@ -285,8 +291,8 @@ const InvoiceForm = () => {
         <div className='InvoiceForm-buttons'>
           {invoiceForm.mode === 'Creating' && (
             <>
-              <button onClick={() => cleanInvoiceForm({ ...invoiceForm, open: false })} className='button3 discard-button true-lavender'>Discard</button>
-              <button className='button4 grey'>Save as Draft</button>
+              <button onClick={() => cleanInvoiceForm()} className='button3 discard-button true-lavender'>Discard</button>
+              <button className='button4 grey' onClick={() => createInvoice('draft')}>Save as Draft</button>
               <button onClick={() => {
                 const checkIsOk = checkFormErrors();
                 if (checkIsOk) {

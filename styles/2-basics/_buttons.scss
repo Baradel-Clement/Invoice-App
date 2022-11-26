@@ -69,6 +69,18 @@
   }
 }
 
+.button5 {
+  padding: 16px 23px;
+  height: 48px;
+  background-color: $red;
+  border-radius: 24px;
+  color: white;
+
+  &:hover {
+    background-color: $light-red;
+  }
+}
+
 .button6 {
   width: 100%;
   border-radius: 24px;

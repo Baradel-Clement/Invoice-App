@@ -1,0 +1,283 @@
+.ViewInvoice {
+  width: 730px;
+  @extend %flex-center-start;
+  flex-flow: column;
+}
+
+.ViewInvoice-back {
+  width: 81px;
+  @extend %flex-between-center;
+  cursor: pointer;
+  margin-bottom: 32px;
+
+  &:hover {
+    p {
+      text-decoration: underline;
+    }
+  }
+}
+
+.View-Invoice-head {
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 10px 10px -10px rgba(72, 84, 159, 0.100397);
+  padding: 10px 32px;
+  @extend %flex-between-center;
+  height: 88px;
+
+  div {
+    @extend %flex-between-center;
+  }
+
+  div:first-child {
+    width: 160px;
+
+    div.status {
+      width: 104px;
+      height: 40px;
+      @extend %flex-center-center;
+      border-radius: 6px;
+
+      &.paid {
+        background-color: rgba(51, 214, 159, 0.1);
+        color: #33D69F;
+
+        span {
+          background-color: #33D69F;
+        }
+      }
+
+      &.pending {
+        background-color: rgba(255, 143, 0, 0.1);
+        color: #FF8F00;
+
+        span {
+          background-color: #FF8F00;
+        }
+      }
+
+      &.draft {
+        background-color: rgba(55, 59, 83, 0.1);
+        color: #373B53;
+
+        span {
+          background-color: #373B53;
+        }
+      }
+
+      p,
+      span {
+        opacity: 1;
+      }
+
+      span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+    }
+  }
+
+  div:last-child {
+    width: 309px;
+  }
+}
+
+.ViewInvoice-body {
+  background: #FFFFFF;
+  box-shadow: 0px 10px 10px -10px rgba(72, 84, 159, 0.100397);
+  border-radius: 8px;
+  width: 730px;
+  max-height: 730px;
+  margin-top: 24px;
+  @extend %flex-start-center;
+  flex-flow: column;
+  padding: 48px 40px;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $stoic-white;
+    border-radius: 4px;
+  }
+
+  &>div.head {
+    width: 634px;
+    height: 75px;
+    @extend %flex-between-start;
+
+    div:first-child {
+      height: 47px;
+      @extend %flex-between-start;
+      flex-flow: column;
+    }
+
+    div:last-child {
+      @extend %flex-between-end;
+      flex-flow: column;
+      height: 100%;
+    }
+  }
+
+  &>div.body {
+    margin-top: 21px;
+    width: 611px;
+    height: 130px;
+    @extend %flex-between-start;
+    align-self: flex-start;
+
+    div:nth-child(1) {
+      height: 126px;
+      @extend %flex-between-start;
+      flex-flow: column;
+
+      div {
+        height: 47px;
+        @extend %flex-between-start;
+        flex-flow: column;
+      }
+    }
+
+    div:nth-child(2) {
+      height: 130px;
+      @extend %flex-start-start;
+      flex-flow: column;
+
+      p:nth-child(2) {
+        margin: 12px 0px;
+      }
+
+      p.XXS:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+
+    div:nth-child(3) {
+      @extend %flex-between-start;
+      flex-flow: column;
+
+      p:last-child {
+        word-break: break-all;
+        max-width: 188px;
+        margin-top: 12px;
+      }
+    }
+  }
+
+  div.items {
+    width: 100%;
+    margin-top: 45px;
+    margin-bottom: 81px;
+    @extend %flex-start-center;
+    flex-flow: column;
+    background: #F9FAFE;
+    border-radius: 8px 8px 0px 0px;
+    padding: 32px 32px 0px 32px;
+    position: relative;
+
+    div.head {
+      @extend %flex-start-start;
+      width: 100%;
+      margin-bottom: 32px;
+
+      p:first-child {
+        width: 286px;
+      }
+
+      p:nth-child(2) {
+        width: 118px;
+      }
+
+      p:nth-child(3) {
+        width: 137px;
+      }
+    }
+
+    div.items-wrap {
+      @extend %flex-start-start;
+      width: 100%;
+      flex-flow: column;
+      margin-bottom: 40px;
+
+      .item {
+        @extend %flex-start-start;
+
+        &:not(:last-child) {
+          margin-bottom: 32px;
+        }
+
+        p:first-child {
+          width: 296px;
+        }
+
+        p:nth-child(2) {
+          width: 15px;
+        }
+
+        p:nth-child(3) {
+          width: 120px;
+          text-align: right;
+        }
+
+        p:nth-child(4) {
+          width: 137px;
+          text-align: right;
+        }
+      }
+    }
+
+    div.total {
+      width: 100%;
+      height: 80px;
+      @extend %flex-between-center;
+      padding: 0px 32px;
+      background: #373B53;
+      border-radius: 0px 0px 8px 8px;
+      position: absolute;
+      bottom: -80px;
+
+      p:last-child {
+        text-align: right;
+      }
+    }
+  }
+}
+
+.ConfirmDeletion {
+  position: absolute;
+  z-index: 6;
+  background: #FFFFFF;
+  box-shadow: 0px 10px 10px -10px rgba(72, 84, 159, 0.100397);
+  border-radius: 8px;
+  width: 480px;
+  height: 249px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 48px;
+  @extend %flex-between-start;
+  flex-flow: column;
+
+  p:nth-child(2) {
+    line-height: 22px;
+  }
+
+  div {
+    @extend %flex-between-center;
+    width: 188px;
+    align-self: flex-end;
+  }
+}
+.ConfirmDeletion-Mask {
+  position: absolute;
+  z-index: 5;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  left: 0px;
+}

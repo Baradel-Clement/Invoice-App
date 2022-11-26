@@ -28,6 +28,9 @@ body, button, input {
 .XL {
     font-size: 26px;
 }
+.L {
+    font-size: 22px;
+}
 .M {
     font-size: 16px;
 }
@@ -35,7 +38,10 @@ body, button, input {
     font-size: 13px;
 }
 .XS {
-    font-size: 10px;
+    font-size: 12px;
+}
+.XXS {
+    font-size: 11px;
 }
 
 .true-lavender {
@@ -49,4 +55,7 @@ body, button, input {
 }
 .red {
     color: $red;
+}
+.white {
+    color: white;
 }

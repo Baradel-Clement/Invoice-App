@@ -1,4 +1,4 @@
-import { getAllUser, getUser } from "../../prisma/user";
+import { getAllUsers, getUser } from "../../prisma/user";
 
 export default async function handle(req, res) {
   try {
@@ -8,11 +8,9 @@ export default async function handle(req, res) {
           const user = await getUser(req.query.id)
           return res.status(200).json(user)
         } else {
-          const users = await getAllUser();
-          return res.status(200).json(users)
+          const users = await getAllUsers();
+          return res.json(users)
         }
-        break;
-
       default:
         break;
     }

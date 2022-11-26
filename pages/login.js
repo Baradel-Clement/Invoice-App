@@ -7,7 +7,6 @@ export default function Login({ csrfToken }) {
   const router = useRouter();
   const { data: session, status } = useSession();
   useEffect(() => {
-    console.log('useefect')
     if (status === 'authenticated') {
       router.replace("/")
     }

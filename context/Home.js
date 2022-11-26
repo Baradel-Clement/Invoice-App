@@ -4,8 +4,22 @@ const HomeContext = createContext();
 
 export const HomeStateContext = ({ children }) => {
   const [statusFilter, setStatusFilter] = useState(false);
-  const [statusFilterValue, setStatusFilterValue] = useState(['Draft', 'Paid']);
-  
+  const [statusFilterValue, setStatusFilterValue] = useState(['Draft', 'Pending']);
+
+  const [invoices, setInvoices] = useState([])
+  const [viewInvoiceMode, setViewInvoiceMode] = useState({mode: false, invoiceId: ''})
+  const [confirmDeletion, setConfirmDeletion] = useState({open: false, invoiceId: '', displayId: ''})
+
+  const deleteInvoiceState = (deletedId) => {
+    const newInvoices = [];
+    invoices.forEach((invoice) => {
+      if (invoice.id !== deletedId) {
+        newInvoices.push(invoice);
+      }
+    })
+    setInvoices(newInvoices);
+  }
+
   const onChangeStatusFilterValue = (filterName) => {
     const newArray = [];
     if (statusFilterValue.includes(filterName)) {
@@ -30,7 +44,14 @@ export const HomeStateContext = ({ children }) => {
         statusFilter,
         setStatusFilter,
         statusFilterValue,
-        onChangeStatusFilterValue
+        onChangeStatusFilterValue,
+        setInvoices,
+        invoices,
+        setViewInvoiceMode,
+        viewInvoiceMode,
+        confirmDeletion,
+        setConfirmDeletion,
+        deleteInvoiceState,
       }}>
       {children}
     </HomeContext.Provider>

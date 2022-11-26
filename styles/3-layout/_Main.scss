@@ -8,11 +8,12 @@
   width: 92.3%;
   position: relative;
   @extend %flex-center-start;
-  padding-top: 100px;
+  padding-top: 72px;
 }
 
 .Home {
   width: 100%;
-  @extend %flex-center-start;
+  @extend %flex-start-center;
+  flex-flow: column;
   position: relative;
 }

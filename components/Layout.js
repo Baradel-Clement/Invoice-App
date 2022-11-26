@@ -5,13 +5,12 @@ import { useInvoiceFormStateContext } from '../context/InvoiceForm';
 import { useHomeStateContext } from '../context/Home';
 import { closeModalStatusFilter } from '../utils/closeModal';
 import InvoiceForm from './InvoiceForm';
+import ConfirmDeletion from './ConfirmDeletion';
 
 const Layout = ({ children }) => {
   const { invoiceForm } = useInvoiceFormStateContext();
-  const { statusFilter, setStatusFilter } = useHomeStateContext();
-  useEffect(() => {
-    // get invoices
-  })
+  const { statusFilter, setStatusFilter, confirmDeletion } = useHomeStateContext();
+  
   return (
     <div className='Layout' onClick={(e) => {
       if (statusFilter) {
@@ -26,6 +25,11 @@ const Layout = ({ children }) => {
       {
         invoiceForm.open && (
           <InvoiceForm />
+        )
+      }
+      {
+        confirmDeletion.open && (
+          <ConfirmDeletion />
         )
       }
       <Sidebar />

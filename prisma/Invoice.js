@@ -14,6 +14,17 @@ export const getInvoiceById = async (id) => {
   return invoice;
 }
 
+export const getInvoices = async (userId) => {
+  /* const invoices = await prisma.invoice.findMany({});
+  return invoices; */
+  const invoices = await prisma.invoice.findMany({
+    where: {
+      userId,
+    },
+  });
+  return invoices;
+}
+
 // CREATE
 export const createInvoice = async (reqBody, session) => {
   const newInvoice = await prisma.invoice.create({
@@ -40,4 +51,14 @@ export const createInvoice = async (reqBody, session) => {
   });
   const invoice = await getInvoiceById(newInvoice.id);
   return invoice;
+}
+
+// DELETE
+export const deleteInvoice = async (reqBody, userId) => {
+  const deleteInvoice = await prisma.invoice.delete({
+    where: {
+      id: reqBody.invoiceId,
+    },
+  })
+  return deleteInvoice;
 }

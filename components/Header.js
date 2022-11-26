@@ -12,17 +12,17 @@ import Checkbox from '@mui/material/Checkbox';
 const Header = () => {
   const { data: session } = useSession();
   const { invoiceForm, setInvoiceForm } = useInvoiceFormStateContext();
-  const { statusFilter, setStatusFilter, statusFilterValue, onChangeStatusFilterValue } = useHomeStateContext();
+  const { statusFilter, setStatusFilter, statusFilterValue, onChangeStatusFilterValue, invoices } = useHomeStateContext();
 
   return (
     <div className='Header'>
       <div className='Header-left'>
         <h2 className='XXL bold'>Invoices</h2>
-        <p className='true-lavender S'>Hi {session.user.name}, you have 7 total invoices</p>
+        <p className='true-lavender S'>{invoices.length !== 0 ? `Hi ${session.user.name}, you have ${invoices.length} total invoices` : 'No invoices'}</p>
       </div>
       <div className='Header-filter'>
         <div className='trigger closeModalStatusFilterOff' onClick={() => setStatusFilter(!statusFilter)}>
-          <p className='M'>Filter by status</p>
+          <p className='M bold'>Filter by status</p>
           <Image className={`${statusFilter ? 'reverse' : ''}`} src={arrowDown} alt='arrow' />
         </div>
         {
