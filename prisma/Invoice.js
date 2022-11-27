@@ -83,6 +83,20 @@ export const editInvoice = async (reqBody, session) => {
   return invoice;
 }
 
+export const markAsPaidInvoice = async (reqBody) => {
+  const markAsPaidInvoice = await prisma.invoice.update({
+    where: {
+      id: reqBody.id,
+    },
+    data: {
+      status: reqBody.status
+    },
+  });
+  
+  const invoicePaid = await getInvoiceById(markAsPaidInvoice.id);
+  return invoicePaid;
+}
+
 // DELETE
 export const deleteInvoice = async (reqBody, userId) => {
   const deleteInvoice = await prisma.invoice.delete({

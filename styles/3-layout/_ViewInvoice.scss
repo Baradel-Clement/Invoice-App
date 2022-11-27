@@ -26,12 +26,9 @@
   @extend %flex-between-center;
   height: 88px;
 
-  div {
-    @extend %flex-between-center;
-  }
-
   div:first-child {
     width: 160px;
+    @extend %flex-between-center;
 
     div.status {
       width: 104px;
@@ -80,8 +77,10 @@
     }
   }
 
-  div:last-child {
-    width: 309px;
+  & > div:last-child {
+    & > button {
+      margin: 0px 4px;
+    }
   }
 }
 

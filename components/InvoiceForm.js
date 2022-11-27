@@ -199,6 +199,7 @@ const InvoiceForm = () => {
       total: invoiceTotal,
       status: invoiceEditing.status,
       userId: session.user.id,
+      changeOnlyStatus: false,
     };
 
     let res = await fetch("api/invoice", {
@@ -369,7 +370,7 @@ const InvoiceForm = () => {
                 cleanInvoiceForm()
               }} className='button3 cancel-button true-lavender'>Cancel</button>
               <button onClick={() => {
-                if (invoiceEditing.status === 'pending') {
+                if (invoiceEditing.status === 'pending' || invoiceEditing.status === 'paid') {
                   const checkIsOk = checkFormErrors();
                   if (checkIsOk) {
                     editInvoice();

@@ -1,4 +1,4 @@
-import { createInvoice, deleteInvoice, getInvoices, editInvoice } from "../../prisma/invoice";
+import { createInvoice, deleteInvoice, getInvoices, editInvoice, markAsPaidInvoice } from "../../prisma/invoice";
 import { getSession } from "next-auth/react";
 
 export default async function handle(req, res) {
@@ -14,8 +14,14 @@ export default async function handle(req, res) {
         const newInvoice = await createInvoice(req.body, session);
         return res.json(newInvoice);
       case 'PUT':
-        const invoiceEdited = await editInvoice(req.body, session);
-        return res.json(invoiceEdited);
+        let invoice;
+        if (req.body.changeOnlyStatus === true) {
+          invoice = await markAsPaidInvoice(req.body, session);
+        }
+        else {
+          invoice = await editInvoice(req.body, session);
+        }
+        return res.json(invoice);
       case 'DELETE':
         const invoiceDeleted = await deleteInvoice(req.body, session.user.id);
         return res.json(invoiceDeleted);

@@ -2,13 +2,46 @@ import React, { useState } from 'react'
 import { useHomeStateContext } from '../context/Home';
 import { useInvoiceFormStateContext } from '../context/InvoiceForm';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 import arrowLeft from '../public/assets/icon-arrow-left.svg'
 import { formatInvoiceDate, getPaymentTermsDate } from '../utils/invoices';
+import toast from 'react-hot-toast';
 
 const ViewInvoice = () => {
-  const { invoices, viewInvoiceMode, setViewInvoiceMode, setConfirmDeletion } = useHomeStateContext();
-  const { triggerEditingMode } = useInvoiceFormStateContext();
+  const { invoices, viewInvoiceMode, setViewInvoiceMode, setConfirmDeletion, setInvoices } = useHomeStateContext();
+  const { triggerEditingMode, setInvoiceForm, cleanInvoiceForm } = useInvoiceFormStateContext();
+  const { data: session } = useSession();
   const invoice = invoices.find((el) => el.id === viewInvoiceMode.invoiceId);
+
+  const markAsPaid = async () => {
+    let body = {
+      changeOnlyStatus: true,
+      status: 'paid',
+      id: invoice.id,
+      userId: session.user.id,
+    }
+
+    let res = await fetch("api/invoice", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    })
+
+    const invoiceMarkAsPaid = await res.json();
+    console.log("Marsk as paid successful", { invoiceMarkAsPaid });
+
+    const newInvoices = [];
+    invoices.forEach((invoice) => {
+      if (invoice.id === invoiceMarkAsPaid[0].id) {
+        newInvoices.push(invoiceMarkAsPaid[0])
+      }
+      else newInvoices.push(invoice)
+    }
+    );
+    toast.success(`${invoiceMarkAsPaid[0].displayId} has been paid`)
+    setInvoices(newInvoices);
+  }
+
   return (
     <div className='ViewInvoice'>
       <div className='ViewInvoice-back' onClick={() => setViewInvoiceMode({ mode: false, invoiceId: '' })}>
@@ -25,8 +58,8 @@ const ViewInvoice = () => {
         </div>
         <div>
           <button onClick={() => triggerEditingMode(invoice)} className='button3 XS true-lavender'>Edit</button>
-          <button onClick={() => setConfirmDeletion({open: true, invoiceId: invoice.id, displayId: invoice.displayId})} className='button5 XS white'>Delete</button>
-          <button className='button2 XS white'>Mark as Paid</button>
+          <button onClick={() => setConfirmDeletion({ open: true, invoiceId: invoice.id, displayId: invoice.displayId })} className='button5 XS white'>Delete</button>
+          {invoice.status !== 'paid' && <button onClick={() => markAsPaid()} className='button2 XS white'>Mark as Paid</button>}
         </div>
       </div>
       <div className='ViewInvoice-body'>
