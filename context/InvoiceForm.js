@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState } from 'react';
+import moment from 'moment';
 
 const InvoiceFormContext = createContext();
 
 export const InvoiceFormStateContext = ({ children }) => {
-  const [invoiceForm, setInvoiceForm] = useState({ open: false, mode: 'Creating' });
+  const [invoiceForm, setInvoiceForm] = useState({ open: false, mode: 'Creating', invoiceEditing: {} });
   const [invoiceFormBillFrom, setInvoiceFormBillFrom] = useState({
     street_adress: '19 Union Terrace', city: 'London', post_code: 'E1 3EZ', country: 'United Kingdom'
   });
@@ -18,6 +19,24 @@ export const InvoiceFormStateContext = ({ children }) => {
     name: 'Email Design', quantity: '2', price: '200.00', id: 2, emptyFields: ['name']
   }]);
   const [invoiceFormFieldErrors, setInvoiceFormFieldErrors] = useState([]);
+
+  const triggerEditingMode = (invoice) => {
+    setInvoiceFormBillFrom({
+      street_adress: invoice.personalStreetAdress, city: invoice.personalCity, post_code: invoice.personalPostCode, country: invoice.personalCountry
+    })
+    setInvoiceFormBillTo({
+      name: invoice.clientName, email: invoice.clientEmail, street_adress: invoice.clientStreetAdress, city: invoice.clientCity,
+      post_code: invoice.clientPostCode, country: invoice.clientCountry, invoice_date: moment(invoice.invoiceDate.slice(0, 10), 'YYYY-MM-DD'), payment_terms: `Net ${invoice.paymentTerms} Day${invoice.paymentTerms === 1 ? '' : 's'}`, project_description: invoice.description
+    })
+    setInvoiceForm({ open: true, mode: 'Editing', invoiceEditing: invoice });
+    const items = invoice.items.map((item, index) => {
+      const newItem = { name: item.name, quantity: item.quantity.toString(), price: item.price.toString(), id: index + 1, emptyFields: [] };
+      console.log(newItem)
+      return newItem;
+    })
+    setInvoiceFormItemList(items);
+    setInvoiceFormFieldErrors([]);
+  }
 
   const checkFormErrors = () => {
     setInvoiceFormFieldErrors([]);
@@ -41,17 +60,17 @@ export const InvoiceFormStateContext = ({ children }) => {
       invoiceFormItemList.forEach((item) => {
         Object.keys(item).forEach(itemField => {
           if (item[itemField] === '' || item[itemField] === ' ') {
-            itemsIdWithErrors.push({id: item.id, fieldError: itemField});
+            itemsIdWithErrors.push({ id: item.id, fieldError: itemField });
           }
         });
       });
 
       let newInvoiceFormItemList = invoiceFormItemList.map((item) => {
-        const newItem = {...item};
+        const newItem = { ...item };
         newItem.emptyFields = [];
         return newItem;
       });
-      
+
       itemsIdWithErrors.forEach((itemIdWithErrors) => {
         const itemIndex = newInvoiceFormItemList.findIndex((item) => item.id === itemIdWithErrors.id);
         newInvoiceFormItemList[itemIndex].emptyFields.push(itemIdWithErrors.fieldError);
@@ -73,7 +92,6 @@ export const InvoiceFormStateContext = ({ children }) => {
   }
 
   const cleanInvoiceForm = () => {
-    setInvoiceForm({ open: false, mode: 'Creating' });
     setInvoiceFormBillFrom({ street_adress: '', city: '', post_code: '', country: '' });
     setInvoiceFormBillTo({
       name: '', email: '', street_adress: '', city: '', post_code: '', country: '', invoice_date: null, payment_terms: 'Net 30 Days', project_description: ''
@@ -149,6 +167,7 @@ export const InvoiceFormStateContext = ({ children }) => {
         cleanInvoiceForm,
         invoiceFormFieldErrors,
         checkFormErrors,
+        triggerEditingMode,
       }}>
       {children}
     </InvoiceFormContext.Provider>

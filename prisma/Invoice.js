@@ -53,6 +53,36 @@ export const createInvoice = async (reqBody, session) => {
   return invoice;
 }
 
+// UPDATE
+export const editInvoice = async (reqBody, session) => {
+  const updateInvoice = await prisma.invoice.update({
+    where: {
+      id: reqBody.id,
+    },
+    data: {
+      personalStreetAdress: reqBody.personalStreetAdress,
+      personalCity: reqBody.personalCity,
+      personalPostCode: reqBody.personalPostCode,
+      personalCountry: reqBody.personalCountry,
+      clientName: reqBody.clientName,
+      clientEmail: reqBody.clientEmail,
+      clientStreetAdress: reqBody.clientStreetAdress,
+      clientCity: reqBody.clientCity,
+      clientPostCode: reqBody.clientPostCode,
+      clientCountry: reqBody.clientCountry,
+      invoiceDate: reqBody.invoiceDate,
+      paymentTerms: reqBody.paymentTerms,
+      description: reqBody.description,
+      items: reqBody.items,
+      total: reqBody.total,
+      status: reqBody.status,
+      user: { connect: { email: session?.user?.email } }, // Connect the new invoice to an existing User with the email provided
+    },
+  });
+  const invoice = await getInvoiceById(updateInvoice.id);
+  return invoice;
+}
+
 // DELETE
 export const deleteInvoice = async (reqBody, userId) => {
   const deleteInvoice = await prisma.invoice.delete({

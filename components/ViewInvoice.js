@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { useHomeStateContext } from '../context/Home';
+import { useInvoiceFormStateContext } from '../context/InvoiceForm';
 import Image from 'next/image';
 import arrowLeft from '../public/assets/icon-arrow-left.svg'
 import { formatInvoiceDate, getPaymentTermsDate } from '../utils/invoices';
 
 const ViewInvoice = () => {
   const { invoices, viewInvoiceMode, setViewInvoiceMode, setConfirmDeletion } = useHomeStateContext();
+  const { triggerEditingMode } = useInvoiceFormStateContext();
   const invoice = invoices.find((el) => el.id === viewInvoiceMode.invoiceId);
   return (
     <div className='ViewInvoice'>
@@ -22,7 +24,7 @@ const ViewInvoice = () => {
           </div>
         </div>
         <div>
-          <button className='button3 XS true-lavender'>Edit</button>
+          <button onClick={() => triggerEditingMode(invoice)} className='button3 XS true-lavender'>Edit</button>
           <button onClick={() => setConfirmDeletion({open: true, invoiceId: invoice.id, displayId: invoice.displayId})} className='button5 XS white'>Delete</button>
           <button className='button2 XS white'>Mark as Paid</button>
         </div>

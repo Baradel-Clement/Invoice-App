@@ -15,6 +15,7 @@ import { generateInvoiceDisplayId } from '../utils/invoiceForm';
 import iconDelete from '../public/assets/icon-delete.svg';
 import iconDeleteHover from '../public/assets/icon-delete-hover.svg';
 import { useHomeStateContext } from '../context/Home';
+import toast from 'react-hot-toast';
 
 const getTotalPrice = (quantity, price) => {
   if (price === '') {
@@ -117,6 +118,7 @@ const InvoiceForm = () => {
   const { invoices, setInvoices } = useHomeStateContext();
   const [iconDeleteHovering, setIconDeleteHovering] = useState(0);
   const { data: session, status } = useSession();
+  const { invoiceEditing } = invoiceForm;
 
   const createInvoice = async (status) => {
     let invoiceTotal = 0;
@@ -157,11 +159,67 @@ const InvoiceForm = () => {
 
     const newInvoice = await res.json();
     console.log("Create successful", { newInvoice });
-    
+
     const newInvoices = [];
     invoices.forEach((invoice) => newInvoices.push(invoice));
     newInvoices.push(newInvoice[0]);
+    toast.success(`${newInvoice[0].displayId} has been created`)
     setInvoices(newInvoices);
+    setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: {} });
+    cleanInvoiceForm();
+  }
+
+  const editInvoice = async () => {
+    let invoiceTotal = 0;
+    let invoice = {
+      id: invoiceEditing.id,
+      personalStreetAdress: invoiceFormBillFrom.street_adress,
+      personalCity: invoiceFormBillFrom.city,
+      personalPostCode: invoiceFormBillFrom.post_code,
+      personalCountry: invoiceFormBillFrom.country,
+      clientName: invoiceFormBillTo.name,
+      clientEmail: invoiceFormBillTo.email,
+      clientStreetAdress: invoiceFormBillTo.street_adress,
+      clientCity: invoiceFormBillTo.city,
+      clientPostCode: invoiceFormBillTo.post_code,
+      clientCountry: invoiceFormBillTo.country,
+      invoiceDate: invoiceFormBillTo.invoice_date,
+      paymentTerms: invoiceFormBillTo.payment_terms[5] === ' ' ? parseInt(`${invoiceFormBillTo.payment_terms[4]}`) : parseInt(`${invoiceFormBillTo.payment_terms[4]}${invoiceFormBillTo.payment_terms[5]}`),
+      description: invoiceFormBillTo.project_description,
+      items: invoiceFormItemList.map((item) => {
+        const newItem = {
+          name: item.name,
+          quantity: parseInt(item.quantity),
+          price: parseFloat(item.price),
+          total: Math.round(parseFloat(item.quantity) * parseFloat(item.price) * 100) / 100
+        };
+        invoiceTotal += newItem.total;
+        return newItem;
+      }),
+      total: invoiceTotal,
+      status: invoiceEditing.status,
+      userId: session.user.id,
+    };
+
+    let res = await fetch("api/invoice", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(invoice)
+    })
+    const invoiceEdited = await res.json();
+    console.log("Edit successful", { invoiceEdited });
+
+    const newInvoices = [];
+    invoices.forEach((invoice) => {
+      if (invoice.id === invoiceEdited[0].id) {
+        newInvoices.push(invoiceEdited[0])
+      }
+      else newInvoices.push(invoice)
+    }
+    );
+    toast.success(`${invoiceEdited[0].displayId} has been edited`)
+    setInvoices(newInvoices);
+    setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: {} });
     cleanInvoiceForm();
   }
 
@@ -169,7 +227,7 @@ const InvoiceForm = () => {
     <>
       <div className='InvoiceForm-mask' onClick={() => setInvoiceForm({ ...invoiceForm, open: false })} />
       <div className='InvoiceForm'>
-        <h3 className='XL bold'>{invoiceForm.mode === 'Creating' ? 'New Invoice' : 'Editing'}</h3>
+        <h3 className='XL bold'>{invoiceForm.mode === 'Creating' ? 'New Invoice' : `Editing ${invoiceEditing.displayId}`}</h3>
         <div className='wrapForm'>
           <div className='InvoiceForm-inputs InvoiceForm-BillFrom'>
             <p className='violet S bold'>Bill From</p>
@@ -291,7 +349,10 @@ const InvoiceForm = () => {
         <div className='InvoiceForm-buttons'>
           {invoiceForm.mode === 'Creating' && (
             <>
-              <button onClick={() => cleanInvoiceForm()} className='button3 discard-button true-lavender'>Discard</button>
+              <button onClick={() => {
+                setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: {} });
+                cleanInvoiceForm()
+              }} className='button3 discard-button true-lavender'>Discard</button>
               <button className='button4 grey' onClick={() => createInvoice('draft')}>Save as Draft</button>
               <button onClick={() => {
                 const checkIsOk = checkFormErrors();
@@ -299,6 +360,25 @@ const InvoiceForm = () => {
                   createInvoice('pending');
                 }
               }} className='button2'>Save & Send</button>
+            </>
+          )}
+          {invoiceForm.mode === 'Editing' && (
+            <>
+              <button onClick={() => {
+                setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: {} });
+                cleanInvoiceForm()
+              }} className='button3 cancel-button true-lavender'>Cancel</button>
+              <button onClick={() => {
+                if (invoiceEditing.status === 'pending') {
+                  const checkIsOk = checkFormErrors();
+                  if (checkIsOk) {
+                    editInvoice();
+                  }
+                }
+                else if (invoiceEditing.status === 'draft') {
+                  editInvoice();
+                }
+              }} className='button2'>Save Changes</button>
             </>
           )}
         </div>

@@ -15,7 +15,6 @@ export const getPaymentTermsDate = (originalDate, paymentTerms) => {
   let currentMonth = parseInt(`${originalDate.slice(5, 7)}`);
   let dayNumber = parseInt(`${originalDate.slice(8, 10)}`);
   dayNumber += paymentTerms;
-  console.log(dayNumber)
   if (dayNumber > 30) {
     dayNumber -= 30;
     currentMonth += 1;
@@ -24,7 +23,6 @@ export const getPaymentTermsDate = (originalDate, paymentTerms) => {
       currentYear += 1;
     }
   }
-  console.log(dayNumber)
   const date = `${dayNumber} ${months[currentMonth - 1]} ${currentYear}`
 
   return date;

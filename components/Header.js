@@ -11,7 +11,7 @@ import Checkbox from '@mui/material/Checkbox';
 
 const Header = () => {
   const { data: session } = useSession();
-  const { invoiceForm, setInvoiceForm } = useInvoiceFormStateContext();
+  const { invoiceForm, setInvoiceForm, cleanInvoiceForm } = useInvoiceFormStateContext();
   const { statusFilter, setStatusFilter, statusFilterValue, onChangeStatusFilterValue, invoices } = useHomeStateContext();
 
   return (
@@ -66,7 +66,10 @@ const Header = () => {
         }
 
       </div>
-      <button type="button" className='button button1' onClick={() => setInvoiceForm({ ...invoiceForm, open: true })}>
+      <button type="button" className='button button1' onClick={() => {
+        cleanInvoiceForm();
+        setInvoiceForm({ ...invoiceForm, open: true });
+      }}>
         <span />
         <Image src={plus} alt="plus" />
         <p className='bold S'>New Invoice</p>
