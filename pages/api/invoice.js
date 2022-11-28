@@ -1,7 +1,7 @@
 import { getSession } from "next-auth/react";
 import prisma from "../../prisma/prisma";
 
-// READ
+// READ 
 // get unique invoice by id
 export const getInvoiceById = async (id) => {
   const invoice = await prisma.invoice.findMany({
