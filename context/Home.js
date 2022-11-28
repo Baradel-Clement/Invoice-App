@@ -8,7 +8,8 @@ export const HomeStateContext = ({ children }) => {
 
   const [invoices, setInvoices] = useState([])
   const [viewInvoiceMode, setViewInvoiceMode] = useState({mode: false, invoiceId: ''})
-  const [confirmDeletion, setConfirmDeletion] = useState({open: false, invoiceId: '', displayId: ''})
+  const [confirmDeletion, setConfirmDeletion] = useState({open: false, invoiceId: '', displayId: ''});
+  const [confirmEmail, setConfirmEmail] = useState({open: false, invoice: {}})
 
   const deleteInvoiceState = (deletedId) => {
     const newInvoices = [];
@@ -52,6 +53,8 @@ export const HomeStateContext = ({ children }) => {
         confirmDeletion,
         setConfirmDeletion,
         deleteInvoiceState,
+        confirmEmail,
+        setConfirmEmail,
       }}>
       {children}
     </HomeContext.Provider>

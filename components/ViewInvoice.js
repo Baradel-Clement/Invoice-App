@@ -8,8 +8,8 @@ import { formatInvoiceDate, getPaymentTermsDate } from '../utils/invoices';
 import toast from 'react-hot-toast';
 
 const ViewInvoice = () => {
-  const { invoices, viewInvoiceMode, setViewInvoiceMode, setConfirmDeletion, setInvoices } = useHomeStateContext();
-  const { triggerEditingMode, setInvoiceForm, cleanInvoiceForm } = useInvoiceFormStateContext();
+  const { invoices, viewInvoiceMode, setViewInvoiceMode, setConfirmDeletion, setInvoices, setConfirmEmail } = useHomeStateContext();
+  const { triggerEditingMode } = useInvoiceFormStateContext();
   const { data: session } = useSession();
   const invoice = invoices.find((el) => el.id === viewInvoiceMode.invoiceId);
 
@@ -60,6 +60,7 @@ const ViewInvoice = () => {
           <button onClick={() => triggerEditingMode(invoice)} className='button3 XS true-lavender'>Edit</button>
           <button onClick={() => setConfirmDeletion({ open: true, invoiceId: invoice.id, displayId: invoice.displayId })} className='button5 XS white'>Delete</button>
           {invoice.status !== 'paid' && <button onClick={() => markAsPaid()} className='button2 XS white'>Mark as Paid</button>}
+          {invoice.status === 'pending' && <button onClick={() => setConfirmEmail({ open: true, invoice })} className='button2 XS white'>Send by email</button>}
         </div>
       </div>
       <div className='ViewInvoice-body'>

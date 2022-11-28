@@ -6,10 +6,11 @@ import { useHomeStateContext } from '../context/Home';
 import { closeModalStatusFilter } from '../utils/closeModal';
 import InvoiceForm from './InvoiceForm';
 import ConfirmDeletion from './ConfirmDeletion';
+import ConfirmEmail from './ConfirmEmail';
 
 const Layout = ({ children }) => {
   const { invoiceForm } = useInvoiceFormStateContext();
-  const { statusFilter, setStatusFilter, confirmDeletion } = useHomeStateContext();
+  const { statusFilter, setStatusFilter, confirmDeletion, confirmEmail } = useHomeStateContext();
   
   return (
     <div className='Layout' onClick={(e) => {
@@ -30,6 +31,11 @@ const Layout = ({ children }) => {
       {
         confirmDeletion.open && (
           <ConfirmDeletion />
+        )
+      }
+      {
+        confirmEmail.open && (
+          <ConfirmEmail />
         )
       }
       <Sidebar />
