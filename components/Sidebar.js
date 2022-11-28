@@ -1,9 +1,14 @@
 import React from 'react';
 import Image from 'next/image';
 import logo from '../public/assets/logo.svg'
-import profilePic from '../public/assets/image-avatar.jpg'
+import { signOut } from "next-auth/react"
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 const Sidebar = () => {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+
   return (
     <div className='Sidebar'>
       <div className='Sidebar-logo'>
@@ -14,11 +19,14 @@ const Sidebar = () => {
         <span className='shape' />
       </div>
       <div className='Sidebar-profile'>
-        <Image
-          src={profilePic}
-          alt="profilePic"
-          priority
-        />
+        {
+          status === 'authenticated' && (
+            <button onClick={() => {
+              signOut();
+              router.push('/login');
+            }} className='button5 logout'>Logout</button>
+          )
+        }
       </div>
     </div>
   )

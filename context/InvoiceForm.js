@@ -31,7 +31,6 @@ export const InvoiceFormStateContext = ({ children }) => {
     setInvoiceForm({ open: true, mode: 'Editing', invoiceEditing: invoice });
     const items = invoice.items.map((item, index) => {
       const newItem = { name: item.name, quantity: item.quantity.toString(), price: item.price.toString(), id: index + 1, emptyFields: [] };
-      console.log(newItem)
       return newItem;
     })
     setInvoiceFormItemList(items);

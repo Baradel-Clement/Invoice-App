@@ -76,6 +76,12 @@
   border-radius: 24px;
   color: white;
 
+  &.logout {
+    font-size: 13px;
+    padding: 12px;
+    height: 40px;
+  }
+
   &:hover {
     background-color: $light-red;
   }

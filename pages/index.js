@@ -19,7 +19,6 @@ const Home = ({ invoices }) => {
     }
   })
   useEffect(() => {
-    console.log(invoices)
     setInvoices(invoices);
   }, [invoices, setInvoices])
 
@@ -49,11 +48,15 @@ const Home = ({ invoices }) => {
 }
 
 export const getServerSideProps = async (ctx) => {
-  const session = await getSession(ctx)
-  const invoices = await getInvoices(session.user.id)
-  const updatedInvoices = JSON.parse(JSON.stringify(invoices))
+  const session = await getSession(ctx);
+  if (session) {
+    const invoices = await getInvoices(session.user.id)
+    const updatedInvoices = JSON.parse(JSON.stringify(invoices))
 
-  return { props: { invoices: updatedInvoices } }
+    return { props: { invoices: updatedInvoices } }
+  }
+  else return { props: { invoices: [] } } 
+
 }
 
 export default Home

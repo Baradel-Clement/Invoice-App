@@ -28,7 +28,6 @@ const ViewInvoice = () => {
     })
 
     const invoiceMarkAsPaid = await res.json();
-    console.log("Marsk as paid successful", { invoiceMarkAsPaid });
 
     const newInvoices = [];
     invoices.forEach((invoice) => {
