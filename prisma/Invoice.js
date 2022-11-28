@@ -14,17 +14,6 @@ export const getInvoiceById = async (id) => {
   return invoice;
 }
 
-export const getInvoices = async (userId) => {
-  /* const invoices = await prisma.invoice.findMany({});
-  return invoices; */
-  const invoices = await prisma.invoice.findMany({
-    where: {
-      userId,
-    },
-  });
-  return invoices;
-}
-
 // CREATE
 export const createInvoice = async (reqBody, session) => {
   const newInvoice = await prisma.invoice.create({

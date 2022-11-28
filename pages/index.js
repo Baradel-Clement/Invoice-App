@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Header from '../components/Header';
 import Invoices from '../components/Invoices';
 import ViewInvoice from '../components/ViewInvoice';
-import { getInvoices } from '../prisma/invoice';
+import { getInvoices } from './api/invoice';
 import { useHomeStateContext } from '../context/Home';
 import { Toaster } from 'react-hot-toast';
 

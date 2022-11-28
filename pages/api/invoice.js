@@ -1,5 +1,18 @@
-import { createInvoice, deleteInvoice, getInvoices, editInvoice, markAsPaidInvoice } from "../../prisma/invoice";
+import { createInvoice, deleteInvoice, editInvoice, markAsPaidInvoice } from "../../prisma/invoice";
 import { getSession } from "next-auth/react";
+
+
+export const getInvoices = async (userId) => {
+  /* const invoices = await prisma.invoice.findMany({});
+  return invoices; */
+  const invoices = await prisma.invoice.findMany({
+    where: {
+      userId,
+    },
+  });
+  return invoices;
+}
+
 
 export default async function handle(req, res) {
   // Get the current session data with {user, email, id}
