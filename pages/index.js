@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useRouter } from "next/router";
 import { useSession, getSession } from 'next-auth/react';
 import Link from 'next/link';
 import Header from '../components/Header';
@@ -10,14 +9,9 @@ import { useHomeStateContext } from '../context/Home';
 import { Toaster } from 'react-hot-toast';
 
 const Home = ({ invoices }) => {
-  const router = useRouter();
   const { status } = useSession();
   const { setInvoices, viewInvoiceMode } = useHomeStateContext();
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.replace("/login")
-    }
-  })
+  
   useEffect(() => {
     setInvoices(invoices);
   }, [invoices, setInvoices])
@@ -55,7 +49,13 @@ export const getServerSideProps = async (ctx) => {
 
     return { props: { invoices: updatedInvoices } }
   }
-  else return { props: { invoices: [] } } 
+  else return {
+    props: { invoices: [] },
+    redirect: {
+      permanent: false,
+      destination: "/login"
+    }
+  }
 
 }
 
