@@ -134,7 +134,7 @@ const InvoiceForm = () => {
       clientCity: invoiceFormBillTo.city,
       clientPostCode: invoiceFormBillTo.post_code,
       clientCountry: invoiceFormBillTo.country,
-      invoiceDate: invoiceFormBillTo.invoice_date,
+      invoiceDate: invoiceFormBillTo.invoice_date === null ? '' : invoiceFormBillTo.invoice_date,
       paymentTerms: invoiceFormBillTo.payment_terms[5] === ' ' ? parseInt(`${invoiceFormBillTo.payment_terms[4]}`) : parseInt(`${invoiceFormBillTo.payment_terms[4]}${invoiceFormBillTo.payment_terms[5]}`),
       description: invoiceFormBillTo.project_description,
       items: invoiceFormItemList.map((item) => {
