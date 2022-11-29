@@ -1,5 +1,5 @@
 import { getSession } from "next-auth/react";
-import prisma from "../../prisma/prisma";
+import prisma from "../../lib/prisma";
 
 // READ 
 // get unique invoice by id

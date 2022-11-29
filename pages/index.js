@@ -46,7 +46,7 @@ const Home = ({ invoices }) => {
     </div>
   )
 }
-// J'arrive pa récup de la data depuis la db en prod. par exemple les users. C'est prisma qui bug c'est sur |PrismaClient?
+
 export const getServerSideProps = async (ctx) => {
   const session = await getSession(ctx);
   if (session) {
