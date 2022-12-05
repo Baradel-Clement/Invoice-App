@@ -16,15 +16,19 @@ import iconDelete from '../public/assets/icon-delete.svg';
 import iconDeleteHover from '../public/assets/icon-delete-hover.svg';
 import { useHomeStateContext } from '../context/Home';
 import toast from 'react-hot-toast';
+import { IInvoice } from '../types/home';
 
-const getTotalPrice = (quantity, price) => {
+const getTotalPrice = (quantity: string, price: string): string => {
   if (price === '') {
     return '0.00';
   }
   if (price !== '' && quantity === '') {
     return parseFloat(price).toFixed(2);
   }
-  return (parseFloat(quantity).toFixed(2) * parseFloat(price).toFixed(2)).toFixed(2)
+  let parseQuantity: number = parseFloat(quantity);
+  let parsePrice: number = parseFloat(price);
+  let total: string = (parseQuantity * parsePrice).toFixed(2);
+  return total;
 }
 
 const StyledButton = styled('button')(
@@ -102,7 +106,7 @@ const StyledPopper = styled(PopperUnstyled)`
   z-index: 1;
 `;
 
-function CustomSelect(props) {
+function CustomSelect(props: any) {
   const slots = {
     root: StyledButton,
     listbox: StyledListbox,
@@ -120,115 +124,124 @@ const InvoiceForm = () => {
   const { data: session, status } = useSession();
   const { invoiceEditing } = invoiceForm;
 
-  const createInvoice = async (status) => {
-    let invoiceTotal = 0;
-    let invoice = {
-      displayId: generateInvoiceDisplayId(),
-      personalStreetAdress: invoiceFormBillFrom.street_adress,
-      personalCity: invoiceFormBillFrom.city,
-      personalPostCode: invoiceFormBillFrom.post_code,
-      personalCountry: invoiceFormBillFrom.country,
-      clientName: invoiceFormBillTo.name,
-      clientEmail: invoiceFormBillTo.email,
-      clientStreetAdress: invoiceFormBillTo.street_adress,
-      clientCity: invoiceFormBillTo.city,
-      clientPostCode: invoiceFormBillTo.post_code,
-      clientCountry: invoiceFormBillTo.country,
-      invoiceDate: invoiceFormBillTo.invoice_date === null ? '' : invoiceFormBillTo.invoice_date,
-      paymentTerms: invoiceFormBillTo.payment_terms[5] === ' ' ? parseInt(`${invoiceFormBillTo.payment_terms[4]}`) : parseInt(`${invoiceFormBillTo.payment_terms[4]}${invoiceFormBillTo.payment_terms[5]}`),
-      description: invoiceFormBillTo.project_description,
-      items: invoiceFormItemList.map((item) => {
-        const newItem = {
-          name: item.name,
-          quantity: parseInt(item.quantity),
-          price: parseFloat(item.price),
-          total: Math.round(parseFloat(item.quantity) * parseFloat(item.price) * 100) / 100
-        };
-        invoiceTotal += newItem.total;
-        return newItem;
-      }),
-      total: invoiceTotal,
-      status,
-      userId: session.user.id,
-    };
-    let res = await fetch("api/invoice", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(invoice)
-    })
+  const createInvoice = async (status: string): Promise<void> => {
+    try {
+      let invoiceTotal = 0;
+      let invoice = {
+        displayId: generateInvoiceDisplayId(),
+        personalStreetAdress: invoiceFormBillFrom.street_adress,
+        personalCity: invoiceFormBillFrom.city,
+        personalPostCode: invoiceFormBillFrom.post_code,
+        personalCountry: invoiceFormBillFrom.country,
+        clientName: invoiceFormBillTo.name,
+        clientEmail: invoiceFormBillTo.email,
+        clientStreetAdress: invoiceFormBillTo.street_adress,
+        clientCity: invoiceFormBillTo.city,
+        clientPostCode: invoiceFormBillTo.post_code,
+        clientCountry: invoiceFormBillTo.country,
+        invoiceDate: invoiceFormBillTo.invoice_date === null ? '' : invoiceFormBillTo.invoice_date,
+        paymentTerms: invoiceFormBillTo.payment_terms[5] === ' ' ? parseInt(`${invoiceFormBillTo.payment_terms[4]}`) : parseInt(`${invoiceFormBillTo.payment_terms[4]}${invoiceFormBillTo.payment_terms[5]}`),
+        description: invoiceFormBillTo.project_description,
+        items: invoiceFormItemList.map((item) => {
+          const newItem = {
+            name: item.name,
+            quantity: parseInt(item.quantity),
+            price: parseFloat(item.price),
+            total: Math.round(parseFloat(item.quantity) * parseFloat(item.price) * 100) / 100
+          };
+          invoiceTotal += newItem.total;
+          return newItem;
+        }),
+        total: invoiceTotal,
+        status,
+        userId: session?.user.id,
+      };
+      let res = await fetch("api/invoice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(invoice)
+      })
 
-    const newInvoice = await res.json();
-    console.log("Create successful", { newInvoice });
+      const newInvoice = await res.json();
+      console.log("Create successful", { newInvoice });
 
-    const newInvoices = [];
-    invoices.forEach((invoice) => newInvoices.push(invoice));
-    newInvoices.push(newInvoice[0]);
-    toast.success(`${newInvoice[0].displayId} has been created`)
-    setInvoices(newInvoices);
-    setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: {} });
-    cleanInvoiceForm();
+      const newInvoices: IInvoice[] = [];
+      invoices.forEach((invoice) => newInvoices.push(invoice));
+      newInvoices.push(newInvoice[0]);
+      toast.success(`${newInvoice[0].displayId} has been created`)
+      setInvoices(newInvoices);
+      setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: null });
+      cleanInvoiceForm();
+    } catch (error) {
+      console.error(error)
+    }
+
   }
 
   const editInvoice = async () => {
-    let invoiceTotal = 0;
-    let invoice = {
-      id: invoiceEditing.id,
-      personalStreetAdress: invoiceFormBillFrom.street_adress,
-      personalCity: invoiceFormBillFrom.city,
-      personalPostCode: invoiceFormBillFrom.post_code,
-      personalCountry: invoiceFormBillFrom.country,
-      clientName: invoiceFormBillTo.name,
-      clientEmail: invoiceFormBillTo.email,
-      clientStreetAdress: invoiceFormBillTo.street_adress,
-      clientCity: invoiceFormBillTo.city,
-      clientPostCode: invoiceFormBillTo.post_code,
-      clientCountry: invoiceFormBillTo.country,
-      invoiceDate: invoiceFormBillTo.invoice_date,
-      paymentTerms: invoiceFormBillTo.payment_terms[5] === ' ' ? parseInt(`${invoiceFormBillTo.payment_terms[4]}`) : parseInt(`${invoiceFormBillTo.payment_terms[4]}${invoiceFormBillTo.payment_terms[5]}`),
-      description: invoiceFormBillTo.project_description,
-      items: invoiceFormItemList.map((item) => {
-        const newItem = {
-          name: item.name,
-          quantity: parseInt(item.quantity),
-          price: parseFloat(item.price),
-          total: Math.round(parseFloat(item.quantity) * parseFloat(item.price) * 100) / 100
-        };
-        invoiceTotal += newItem.total;
-        return newItem;
-      }),
-      total: invoiceTotal,
-      status: invoiceEditing.status,
-      userId: session.user.id,
-      changeOnlyStatus: false,
-    };
+    try {
+      let invoiceTotal = 0;
+      let invoice = {
+        id: invoiceEditing?.id,
+        personalStreetAdress: invoiceFormBillFrom.street_adress,
+        personalCity: invoiceFormBillFrom.city,
+        personalPostCode: invoiceFormBillFrom.post_code,
+        personalCountry: invoiceFormBillFrom.country,
+        clientName: invoiceFormBillTo.name,
+        clientEmail: invoiceFormBillTo.email,
+        clientStreetAdress: invoiceFormBillTo.street_adress,
+        clientCity: invoiceFormBillTo.city,
+        clientPostCode: invoiceFormBillTo.post_code,
+        clientCountry: invoiceFormBillTo.country,
+        invoiceDate: invoiceFormBillTo.invoice_date,
+        paymentTerms: invoiceFormBillTo.payment_terms[5] === ' ' ? parseInt(`${invoiceFormBillTo.payment_terms[4]}`) : parseInt(`${invoiceFormBillTo.payment_terms[4]}${invoiceFormBillTo.payment_terms[5]}`),
+        description: invoiceFormBillTo.project_description,
+        items: invoiceFormItemList.map((item) => {
+          const newItem = {
+            name: item.name,
+            quantity: parseInt(item.quantity),
+            price: parseFloat(item.price),
+            total: Math.round(parseFloat(item.quantity) * parseFloat(item.price) * 100) / 100
+          };
+          invoiceTotal += newItem.total;
+          return newItem;
+        }),
+        total: invoiceTotal,
+        status: invoiceEditing?.status,
+        userId: session?.user.id,
+        changeOnlyStatus: false,
+      };
 
-    let res = await fetch("api/invoice", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(invoice)
-    })
-    const invoiceEdited = await res.json();
-    console.log("Edit successful", { invoiceEdited });
+      let res = await fetch("api/invoice", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(invoice)
+      })
+      const invoiceEdited = await res.json();
+      console.log("Edit successful", { invoiceEdited });
 
-    const newInvoices = [];
-    invoices.forEach((invoice) => {
-      if (invoice.id === invoiceEdited[0].id) {
-        newInvoices.push(invoiceEdited[0])
+      const newInvoices: IInvoice[] = [];
+      invoices.forEach((invoice) => {
+        if (invoice.id === invoiceEdited[0].id) {
+          newInvoices.push(invoiceEdited[0])
+        }
+        else newInvoices.push(invoice)
       }
-      else newInvoices.push(invoice)
+      );
+      toast.success(`${invoiceEdited[0].displayId} has been edited`)
+      setInvoices(newInvoices);
+      setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: null });
+      cleanInvoiceForm();
+    } catch (error) {
+      console.error(error);
     }
-    );
-    toast.success(`${invoiceEdited[0].displayId} has been edited`)
-    setInvoices(newInvoices);
-    setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: {} });
-    cleanInvoiceForm();
   }
 
   return (
     <>
       <div className='InvoiceForm-mask' onClick={() => setInvoiceForm({ ...invoiceForm, open: false })} />
       <div className='InvoiceForm'>
-        <h3 className='XL bold'>{invoiceForm.mode === 'Creating' ? 'New Invoice' : `Editing ${invoiceEditing.displayId}`}</h3>
+        <h3 className='XL bold'>{invoiceForm.mode === 'Creating' ? 'New Invoice' : `Editing ${invoiceEditing?.displayId}`}</h3>
         <div className='wrapForm'>
           <div className='InvoiceForm-inputs InvoiceForm-BillFrom'>
             <p className='violet S bold'>Bill From</p>
@@ -295,8 +308,8 @@ const InvoiceForm = () => {
                 <LocalizationProvider dateAdapter={AdapterMoment}>
                   <DatePicker
                     value={invoiceFormBillTo.invoice_date}
-                    onChange={(newValue) => {
-                      onChangeInvoiceFormBillTo('invoice_date', newValue);
+                    onChange={(value: string | null, keyboardInputValue?: string | undefined) => {
+                      onChangeInvoiceFormBillTo('invoice_date', value);
                     }}
                     className={`${invoiceFormFieldErrors.includes('client_invoice_date') ? 'error' : ''}`}
                     renderInput={(params) => <TextField {...params} />}
@@ -306,7 +319,7 @@ const InvoiceForm = () => {
               </div>
               <div className='input'>
                 <p className='true-lavender S'>Payment Terms</p>
-                <CustomSelect value={invoiceFormBillTo.payment_terms} onChange={(e, newValue) => onChangeInvoiceFormBillTo('payment_terms', newValue)}>
+                <CustomSelect value={invoiceFormBillTo.payment_terms} onChange={(e: React.FormEvent<HTMLInputElement>, newValue: string) => onChangeInvoiceFormBillTo('payment_terms', newValue)}>
                   <StyledOption value={'Net 1 Day'}>Net 1 Day</StyledOption>
                   <StyledOption value={'Net 7 Days'}>Net 7 Days</StyledOption>
                   <StyledOption value={'Net 14 Days'}>Net 14 Days</StyledOption>
@@ -351,11 +364,12 @@ const InvoiceForm = () => {
           {invoiceForm.mode === 'Creating' && (
             <>
               <button onClick={() => {
-                setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: {} });
+                setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: null });
                 cleanInvoiceForm()
               }} className='button3 discard-button true-lavender'>Discard</button>
               <button className='button4 grey' onClick={() => createInvoice('draft')}>Save as Draft</button>
               <button onClick={() => {
+                console.log(invoiceFormBillTo.invoice_date)
                 const checkIsOk = checkFormErrors();
                 if (checkIsOk) {
                   createInvoice('pending');
@@ -366,17 +380,17 @@ const InvoiceForm = () => {
           {invoiceForm.mode === 'Editing' && (
             <>
               <button onClick={() => {
-                setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: {} });
+                setInvoiceForm({ open: false, mode: 'Creating', invoiceEditing: null });
                 cleanInvoiceForm()
               }} className='button3 cancel-button true-lavender'>Cancel</button>
               <button onClick={() => {
-                if (invoiceEditing.status === 'pending' || invoiceEditing.status === 'paid') {
+                if (invoiceEditing?.status === 'pending' || invoiceEditing?.status === 'paid') {
                   const checkIsOk = checkFormErrors();
                   if (checkIsOk) {
                     editInvoice();
                   }
                 }
-                else if (invoiceEditing.status === 'draft') {
+                else if (invoiceEditing?.status === 'draft') {
                   editInvoice();
                 }
               }} className='button2'>Save Changes</button>

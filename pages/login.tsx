@@ -1,9 +1,16 @@
-import React, { useEffect } from "react"
+import React, { ReactElement, useEffect } from "react"
 import { getCsrfToken } from "next-auth/react"
 import { useSession, getSession } from 'next-auth/react';
 import { useRouter } from "next/router";
+import { NextPageWithLayout } from "./_app";
+import Layout from "../components/Layout";
+import { GetServerSideProps } from "next";
 
-export default function Login({ csrfToken }) {
+type Props = {
+  csrfToken: any;
+}
+
+const Login: NextPageWithLayout<Props> = ({ csrfToken }) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   useEffect(() => {
@@ -24,9 +31,19 @@ export default function Login({ csrfToken }) {
   )
 }
 
-export async function getServerSideProps(context) {
+Login.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const csrfToken = await getCsrfToken(context);
   return {
     props: { csrfToken },
   }
 }
+
+export default Login;

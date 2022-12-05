@@ -1,9 +1,12 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { formatInvoiceDate } from '../../utils/invoices';
 const mail = require('@sendgrid/mail');
 
 mail.setApiKey(process.env.EMAIL_SERVER_PASSWORD)
 
-export default async function handle(req, res) {
+type Item = { name: string; price: number; quantity: number; total: number; }
+
+export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   try {
     switch (req.method) {
       case 'POST':
@@ -13,7 +16,7 @@ export default async function handle(req, res) {
           You have until ${formatInvoiceDate(body.invoice.invoiceDate)} to pay this invoice !\r\n
           Items:\r\n
           Name Qty Price Total
-          ${body.invoice.items.map((item) => `\r\n${item.name} ${item.quantity} ${item.price} £ ${item.total}`)}
+          ${body.invoice.items.map((item: Item) => `\r\n${item.name} ${item.quantity} ${item.price} £ ${item.total}`)}
           \r\n<b>Amount due : £ ${body.invoice.total}
         `;
 
@@ -31,7 +34,7 @@ export default async function handle(req, res) {
       default:
         break;
     }
-  } catch (err) {
-    return res.status(500).json({ ...err, message: err.message })
+  } catch (err: any) {
+    return res.status(500).json({ message: err.message })
   }
 }

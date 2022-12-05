@@ -1,3 +1,4 @@
+import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../lib/prisma";
 
 export const getAllUsers = async () => {
@@ -5,7 +6,7 @@ export const getAllUsers = async () => {
   return users;
 }
 
-export const getUser = async (id) => {
+export const getUser = async (id: any) => {
   const user = await prisma.user.findUnique({
     where: { id }
   })
@@ -13,7 +14,7 @@ export const getUser = async (id) => {
 }
 
 
-export default async function handle(req, res) {
+export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   try {
     switch (req.method) {
       case 'GET':
@@ -27,7 +28,7 @@ export default async function handle(req, res) {
       default:
         break;
     }
-  } catch(err) {
-    return res.status(500).json({ ...err, message: err.message})
+  } catch(err: any) {
+    return res.status(500).json({ message: err.message})
   }
 }

@@ -1,9 +1,10 @@
+import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import prisma from "../../lib/prisma";
 
 // READ 
 // get unique invoice by id
-export const getInvoiceById = async (id) => {
+export const getInvoiceById = async (id: string) => {
   const invoice = await prisma.invoice.findMany({
     where: {
       id,
@@ -15,7 +16,7 @@ export const getInvoiceById = async (id) => {
   return invoice;
 }
 
-export const getInvoices = async (userId) => {
+export const getInvoices = async (userId: string) => {
   /* const invoices = await prisma.invoice.findMany({});
   return invoices; */
   const invoices = await prisma.invoice.findMany({
@@ -27,7 +28,7 @@ export const getInvoices = async (userId) => {
 }
 
 // CREATE
-export const createInvoice = async (reqBody, session) => {
+export const createInvoice = async (reqBody: any, session: any) => {
   const newInvoice = await prisma.invoice.create({
     data: {
       displayId: reqBody.displayId,
@@ -55,7 +56,7 @@ export const createInvoice = async (reqBody, session) => {
 }
 
 // UPDATE
-export const editInvoice = async (reqBody, session) => {
+export const editInvoice = async (reqBody: any, session: any) => {
   const updateInvoice = await prisma.invoice.update({
     where: {
       id: reqBody.id,
@@ -84,13 +85,13 @@ export const editInvoice = async (reqBody, session) => {
   return invoice;
 }
 
-export const markAsPaidInvoice = async (reqBody) => {
+export const markAsPaidInvoice = async (id: string, status: string) => {
   const markAsPaidInvoice = await prisma.invoice.update({
     where: {
-      id: reqBody.id,
+      id: id,
     },
     data: {
-      status: reqBody.status
+      status: status
     },
   });
   
@@ -99,23 +100,23 @@ export const markAsPaidInvoice = async (reqBody) => {
 }
 
 // DELETE
-export const deleteInvoice = async (reqBody, userId) => {
+export const deleteInvoice = async (invoiceId: string) => {
   const deleteInvoice = await prisma.invoice.delete({
     where: {
-      id: reqBody.invoiceId,
+      id: invoiceId,
     },
   })
   return deleteInvoice;
 }
 
-export default async function handle(req, res) {
+export default async function handle(req: NextApiRequest, res: NextApiResponse) {
   // Get the current session data with {user, email, id}
   const session = await getSession({ req });
 
   try {
     switch (req.method) {
       case 'GET':
-        const invoices = await getInvoices(session.user.id)
+        const invoices = await getInvoices(session?.user.id)
         return res.json(invoices)
       case 'POST':
         const newInvoice = await createInvoice(req.body, session);
@@ -123,19 +124,19 @@ export default async function handle(req, res) {
       case 'PUT':
         let invoice;
         if (req.body.changeOnlyStatus === true) {
-          invoice = await markAsPaidInvoice(req.body, session);
+          invoice = await markAsPaidInvoice(req.body.id, req.body.status);
         }
         else {
-          invoice = await editInvoice(req.body, session);
+          invoice = await editInvoice(req.body.invoiceId, session);
         }
         return res.json(invoice);
       case 'DELETE':
-        const invoiceDeleted = await deleteInvoice(req.body, session.user.id);
+        const invoiceDeleted = await deleteInvoice(req.body);
         return res.json(invoiceDeleted);
       default:
         break;
     }
-  } catch (error) {
-    return res.status(500).json({ ...error, message: error.message })
+  } catch (error: any) {
+    return res.status(500).json({ message: error.message })
   }
 }

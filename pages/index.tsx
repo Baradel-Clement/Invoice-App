@@ -1,18 +1,28 @@
 import React, { useEffect } from 'react';
+import type { ReactElement } from 'react'
+import Layout from '../components/Layout'
+import type { NextPageWithLayout } from './_app'
 import { useSession, getSession } from 'next-auth/react';
 import Link from 'next/link';
+import { Toaster } from 'react-hot-toast';
 import Header from '../components/Header';
 import Invoices from '../components/Invoices';
 import ViewInvoice from '../components/ViewInvoice';
 import { getInvoices } from './api/invoice';
 import { useHomeStateContext } from '../context/Home';
-import { Toaster } from 'react-hot-toast';
+import { GetServerSideProps } from 'next';
+import { IInvoice } from '../types/home';
 
-const Home = ({ invoices }) => {
+type Props = {
+  invoices: IInvoice[];
+}
+
+const Home: NextPageWithLayout<Props> = ({invoices}) => {
   const { status } = useSession();
   const { setInvoices, viewInvoiceMode } = useHomeStateContext();
-  
+
   useEffect(() => {
+    console.log(invoices)
     setInvoices(invoices);
   }, [invoices, setInvoices])
 
@@ -41,8 +51,16 @@ const Home = ({ invoices }) => {
   )
 }
 
-export const getServerSideProps = async (ctx) => {
-  const session = await getSession(ctx);
+Home.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
+  )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
   if (session) {
     const invoices = await getInvoices(session.user.id)
     const updatedInvoices = JSON.parse(JSON.stringify(invoices))

@@ -27,7 +27,7 @@ const Invoices = () => {
                   return (
                     <div key={invoice.id} className='Invoice' onClick={() => setViewInvoiceMode({mode: true, invoiceId: invoice.id})}>
                       <p className='bold XS'>{invoice.displayId}</p>
-                      <p className='grey XS'>Due {formatInvoiceDate(invoice.invoiceDate.slice(0, 10))}</p>
+                      <p className='grey XS'>Due {formatInvoiceDate(invoice.invoiceDate.toString().slice(0, 10))}</p>
                       <p className='grey XS'>{invoice.clientName}</p>
                       <p className='bold M'>£ {invoice.total}</p>
                       <div className={`status ${invoice.status}`}>

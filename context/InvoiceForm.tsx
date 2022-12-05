@@ -1,14 +1,22 @@
 import React, { createContext, useContext, useState } from 'react';
+import { InvoiceFormContextType } from '../types/invoiceForm';
 import moment from 'moment';
+import { IInvoice } from '../types/home';
 
-const InvoiceFormContext = createContext();
+type InvoiceFormContextProviderProps = {
+  children: React.ReactNode;
+}
 
-export const InvoiceFormStateContext = ({ children }) => {
-  const [invoiceForm, setInvoiceForm] = useState({ open: false, mode: 'Creating', invoiceEditing: {} });
+export const InvoiceFormContext = createContext({} as InvoiceFormContextType)
+
+export const InvoiceFormContextProvider = ({ children }: InvoiceFormContextProviderProps) => {
+  const [invoiceForm, setInvoiceForm] = useState<{ open: boolean, mode: string, invoiceEditing: IInvoice | null }>({ open: false, mode: 'Creating', invoiceEditing: null });
   const [invoiceFormBillFrom, setInvoiceFormBillFrom] = useState({
     street_adress: '19 Union Terrace', city: 'London', post_code: 'E1 3EZ', country: 'United Kingdom'
   });
-  const [invoiceFormBillTo, setInvoiceFormBillTo] = useState({
+  const [invoiceFormBillTo, setInvoiceFormBillTo] = useState<{
+    name: string, email: string, street_adress: string, city: string, post_code: string, country: string, invoice_date: moment.Moment | Date | string | null, payment_terms: string, project_description: string
+  }>({
     name: 'Alex Grim', email: 'alexgrim@mail.com', street_adress: '84 Church Way', city: 'Bradford',
     post_code: 'BD1 9PB', country: 'United Kingdom', invoice_date: null, payment_terms: 'Net 30 Days', project_description: 'Graphic Design'
   });
@@ -18,15 +26,15 @@ export const InvoiceFormStateContext = ({ children }) => {
   {
     name: 'Email Design', quantity: '2', price: '200.00', id: 2, emptyFields: ['name']
   }]);
-  const [invoiceFormFieldErrors, setInvoiceFormFieldErrors] = useState([]);
+  const [invoiceFormFieldErrors, setInvoiceFormFieldErrors] = useState(['']);
 
-  const triggerEditingMode = (invoice) => {
+  const triggerEditingMode = (invoice: IInvoice) => {
     setInvoiceFormBillFrom({
       street_adress: invoice.personalStreetAdress, city: invoice.personalCity, post_code: invoice.personalPostCode, country: invoice.personalCountry
     })
     setInvoiceFormBillTo({
       name: invoice.clientName, email: invoice.clientEmail, street_adress: invoice.clientStreetAdress, city: invoice.clientCity,
-      post_code: invoice.clientPostCode, country: invoice.clientCountry, invoice_date: moment(invoice.invoiceDate.slice(0, 10), 'YYYY-MM-DD'), payment_terms: `Net ${invoice.paymentTerms} Day${invoice.paymentTerms === 1 ? '' : 's'}`, project_description: invoice.description
+      post_code: invoice.clientPostCode, country: invoice.clientCountry, invoice_date: moment(invoice.invoiceDate.toString().slice(0, 10), 'YYYY-MM-DD'), payment_terms: `Net ${invoice.paymentTerms} Day${invoice.paymentTerms === 1 ? '' : 's'}`, project_description: invoice.description
     })
     setInvoiceForm({ open: true, mode: 'Editing', invoiceEditing: invoice });
     const items = invoice.items.map((item, index) => {
@@ -39,13 +47,13 @@ export const InvoiceFormStateContext = ({ children }) => {
 
   const checkFormErrors = () => {
     setInvoiceFormFieldErrors([]);
-    const newInvoiceFormFieldErrors = [];
-    Object.keys(invoiceFormBillFrom).forEach(field => {
+    const newInvoiceFormFieldErrors: string[] = [];
+    (Object.keys(invoiceFormBillFrom) as Array<keyof typeof invoiceFormBillFrom>).forEach(field => {
       if (invoiceFormBillFrom[field] === '' || invoiceFormBillFrom[field] === ' ') {
         newInvoiceFormFieldErrors.push(`personal_${field}`);
       }
     });
-    Object.keys(invoiceFormBillTo).forEach(field => {
+    (Object.keys(invoiceFormBillTo) as Array<keyof typeof invoiceFormBillTo>).forEach(field => {
       if (invoiceFormBillTo[field] === '' || invoiceFormBillTo[field] === ' ' || invoiceFormBillTo[field] === null) {
         newInvoiceFormFieldErrors.push(`client_${field}`);
       }
@@ -55,9 +63,9 @@ export const InvoiceFormStateContext = ({ children }) => {
       newInvoiceFormFieldErrors.push('no_item');
     }
     else {
-      const itemsIdWithErrors = [];
+      const itemsIdWithErrors: { id: number, fieldError: string }[] = [];
       invoiceFormItemList.forEach((item) => {
-        Object.keys(item).forEach(itemField => {
+        (Object.keys(item) as Array<keyof typeof item>).forEach(itemField => {
           if (item[itemField] === '' || item[itemField] === ' ') {
             itemsIdWithErrors.push({ id: item.id, fieldError: itemField });
           }
@@ -114,8 +122,15 @@ export const InvoiceFormStateContext = ({ children }) => {
 
     setInvoiceFormItemList(newArray)
   }
-  const deleteInvoiceFormItem = (itemId) => {
-    const newArray = [];
+
+  const deleteInvoiceFormItem = (itemId: number) => {
+    const newArray: {
+      name: string;
+      quantity: string;
+      price: string;
+      id: number;
+      emptyFields: string[];
+    }[] = [];
 
     invoiceFormItemList.forEach((item) => {
       if (item.id !== itemId) {
@@ -126,27 +141,35 @@ export const InvoiceFormStateContext = ({ children }) => {
     setInvoiceFormItemList(newArray)
   }
 
-  const onChangeInvoiceFormItemList = (itemId, inputName, inputValue) => {
+  const onChangeInvoiceFormItemList = (itemId: number, inputName: string, inputValue: string) => {
     const itemOnChange = invoiceFormItemList.find((item) => itemId === item.id);
     const itemOnChangeIndex = invoiceFormItemList.findIndex((item) => itemId === item.id);
-    const newArray = [];
-    const newItem = { ...itemOnChange, [inputName]: inputValue };
+    const newArray: {
+      name: string;
+      quantity: string;
+      price: string;
+      id: number;
+      emptyFields: string[];
+    }[] = [];
+    if (itemOnChange) {
+      const newItem = { ...itemOnChange, [inputName]: inputValue };
 
-    invoiceFormItemList.forEach((item, index) => {
-      if (index === itemOnChangeIndex) {
-        newArray.push(newItem);
-      }
-      else {
-        newArray.push(item);
-      }
-    })
-    setInvoiceFormItemList(newArray)
+      invoiceFormItemList.forEach((item, index) => {
+        if (index === itemOnChangeIndex) {
+          newArray.push(newItem);
+        }
+        else {
+          newArray.push(item);
+        }
+      })
+      setInvoiceFormItemList(newArray)
+    }
   }
 
-  const onChangeInvoiceFormBillFrom = (inputName, inputValue) => {
+  const onChangeInvoiceFormBillFrom = (inputName: string, inputValue: string) => {
     setInvoiceFormBillFrom({ ...invoiceFormBillFrom, [inputName]: inputValue })
   }
-  const onChangeInvoiceFormBillTo = (inputName, inputValue) => {
+  const onChangeInvoiceFormBillTo = (inputName: string, inputValue: string | null) => {
     setInvoiceFormBillTo({ ...invoiceFormBillTo, [inputName]: inputValue })
   }
 

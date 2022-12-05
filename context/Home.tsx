@@ -1,19 +1,24 @@
 import React, { createContext, useContext, useState } from 'react';
+import { IInvoice, HomeContextType } from '../types/home';
 
-const HomeContext = createContext();
+type HomeContextProviderProps = {
+  children: React.ReactNode;
+}
 
-export const HomeStateContext = ({ children }) => {
+export const HomeContext = createContext({} as HomeContextType)
+
+export const HomeContextProvider = ({ children }: HomeContextProviderProps) => {
   const [statusFilter, setStatusFilter] = useState(false);
   const [statusFilterValue, setStatusFilterValue] = useState(['Draft', 'Pending']);
 
-  const [invoices, setInvoices] = useState([])
-  const [viewInvoiceMode, setViewInvoiceMode] = useState({mode: false, invoiceId: ''})
-  const [confirmDeletion, setConfirmDeletion] = useState({open: false, invoiceId: '', displayId: ''});
-  const [confirmEmail, setConfirmEmail] = useState({open: false, invoice: {}})
+  const [invoices, setInvoices] = useState<IInvoice[]>([])
+  const [viewInvoiceMode, setViewInvoiceMode] = useState({ mode: false, invoiceId: '' })
+  const [confirmDeletion, setConfirmDeletion] = useState({ open: false, invoiceId: '', displayId: '' });
+  const [confirmEmail, setConfirmEmail] = useState({ open: false, invoice: {} })
 
-  const deleteInvoiceState = (deletedId) => {
-    const newInvoices = [];
-    invoices.forEach((invoice) => {
+  const deleteInvoiceState = (deletedId: string) => {
+    const newInvoices: IInvoice[] = [];
+    invoices?.forEach((invoice) => {
       if (invoice.id !== deletedId) {
         newInvoices.push(invoice);
       }
@@ -21,7 +26,7 @@ export const HomeStateContext = ({ children }) => {
     setInvoices(newInvoices);
   }
 
-  const onChangeStatusFilterValue = (filterName) => {
+  const onChangeStatusFilterValue = (filterName: string) => {
     const newArray = [];
     if (statusFilterValue.includes(filterName)) {
       statusFilterValue.forEach((statut) => {

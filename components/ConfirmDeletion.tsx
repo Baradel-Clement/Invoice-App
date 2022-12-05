@@ -5,19 +5,24 @@ import { useHomeStateContext } from '../context/Home';
 const ConfirmDeletion = () => {
   const { confirmDeletion, setConfirmDeletion, setViewInvoiceMode, deleteInvoiceState } = useHomeStateContext();
 
-  const deleteInvoice = async (invoiceId, displayId) => {
-    let res = await fetch("api/invoice", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ invoiceId })
-    })
+  const deleteInvoice = async (invoiceId: string, displayId: string): Promise<void> => {
+    try {
+      let res = await fetch("api/invoice", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invoiceId })
+      })
 
-    const invoiceDeleted = await res.json();
-    console.log("Deletion successful", { invoiceDeleted });
-    toast.success(`${displayId} has been deleted`);
-    deleteInvoiceState(invoiceId);
-    setViewInvoiceMode({ mode: false, invoiceId: '' });
-    setConfirmDeletion({ open: false, invoiceId: '', displayId: '' });
+      const invoiceDeleted = await res.json();
+
+      console.log("Deletion successful", { invoiceDeleted });
+      toast.success(`${displayId} has been deleted`);
+      deleteInvoiceState(invoiceId);
+      setViewInvoiceMode({ mode: false, invoiceId: '' });
+      setConfirmDeletion({ open: false, invoiceId: '', displayId: '' });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (

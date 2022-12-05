@@ -18,7 +18,7 @@ const Header = () => {
     <div className='Header'>
       <div className='Header-left'>
         <h2 className='XXL bold'>Invoices</h2>
-        <p className='true-lavender S'>{invoices.length !== 0 ? `Hi ${session.user.name}, you have ${invoices.length} total invoices` : 'No invoices'}</p>
+        <p className='true-lavender S'>{invoices.length !== 0 ? `Hi ${session?.user.name}, you have ${invoices.length} total invoices` : 'No invoices'}</p>
       </div>
       <div className='Header-filter'>
         <div className='trigger closeModalStatusFilterOff' onClick={() => setStatusFilter(!statusFilter)}>

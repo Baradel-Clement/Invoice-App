@@ -8,19 +8,25 @@ const ConfirmEmail = () => {
   const { data: session } = useSession();
   const invoice = confirmEmail.invoice;
 
-  const sendEmail = async () => {
-    const body = JSON.stringify({
-      emailTo: invoice.clientEmail,
-      name: session.user.email,
-      invoice,
-    });
+  const sendEmail = async (): Promise<void> => {
+    try {
+      const body = JSON.stringify({
+        emailTo: invoice.clientEmail,
+        name: session?.user?.email,
+        invoice,
+      });
 
-    fetch('/api/mail', {
-      method: 'POST',
-      body,
-    })
-    toast.success(`Invoice ${invoice.displayId} has been sent to ${invoice.clientEmail}`)
-    setConfirmEmail({ open: false, invoice: {} })
+      fetch('/api/mail', {
+        method: 'POST',
+        body,
+      })
+      
+      toast.success(`Invoice ${invoice.displayId} has been sent to ${invoice.clientEmail}`)
+      setConfirmEmail({ open: false, invoice: {} })
+    } catch (error) {
+      console.error(error)
+    }
+
   }
 
   return (

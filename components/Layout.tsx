@@ -8,7 +8,7 @@ import InvoiceForm from './InvoiceForm';
 import ConfirmDeletion from './ConfirmDeletion';
 import ConfirmEmail from './ConfirmEmail';
 
-const Layout = ({ children }) => {
+const Layout = ({ children }: any) => {
   const { invoiceForm } = useInvoiceFormStateContext();
   const { statusFilter, setStatusFilter, confirmDeletion, confirmEmail } = useHomeStateContext();
   

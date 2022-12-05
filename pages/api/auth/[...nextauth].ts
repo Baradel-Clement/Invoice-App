@@ -18,12 +18,11 @@ export default NextAuth({
       from: process.env.EMAIL_FROM
     }),
   ],
-  database: process.env.DATABASE_URL,
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async session({ session, token, user }) {
-      const indexAt = user.email.indexOf('@');
-      const newName = user.email.slice(0, indexAt);
+      const indexAt = user?.email?.indexOf('@');
+      const newName = user?.email?.slice(0, indexAt);
       session.user.id = user.id;
       session.user.name = newName;
       return session;
