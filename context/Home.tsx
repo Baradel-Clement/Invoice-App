@@ -14,7 +14,7 @@ export const HomeContextProvider = ({ children }: HomeContextProviderProps) => {
   const [invoices, setInvoices] = useState<IInvoice[]>([])
   const [viewInvoiceMode, setViewInvoiceMode] = useState({ mode: false, invoiceId: '' })
   const [confirmDeletion, setConfirmDeletion] = useState({ open: false, invoiceId: '', displayId: '' });
-  const [confirmEmail, setConfirmEmail] = useState({ open: false, invoice: {} })
+  const [confirmEmail, setConfirmEmail] = useState<{ open: boolean, invoice: IInvoice | null }>({ open: false, invoice: null })
 
   const deleteInvoiceState = (deletedId: string) => {
     const newInvoices: IInvoice[] = [];

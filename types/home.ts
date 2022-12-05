@@ -34,7 +34,7 @@ export type HomeContextType = {
   invoices: IInvoice[];
   viewInvoiceMode: { mode: boolean, invoiceId: string };
   confirmDeletion: { open: boolean, invoiceId: string, displayId: string };
-  confirmEmail: { open: boolean, invoice: {} };
+  confirmEmail: { open: boolean, invoice: IInvoice | null };
   deleteInvoiceState: (deletedId: string) => void;
   onChangeStatusFilterValue: (filterName: string) => void;
   setStatusFilter: React.Dispatch<React.SetStateAction<boolean>>;
@@ -48,8 +48,5 @@ export type HomeContextType = {
     invoiceId: string;
     displayId: string;
   }>>
-  setConfirmEmail: React.Dispatch<React.SetStateAction<{
-    open: boolean;
-    invoice: {};
-  }>>
+  setConfirmEmail: React.Dispatch<React.SetStateAction<{ open: boolean, invoice: IInvoice | null }>>
 };
