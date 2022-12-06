@@ -131,7 +131,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         }
         return res.json(invoice);
       case 'DELETE':
-        const invoiceDeleted = await deleteInvoice(req.body);
+        const invoiceDeleted = await deleteInvoice(req.body.invoiceId);
         return res.json(invoiceDeleted);
       default:
         break;
