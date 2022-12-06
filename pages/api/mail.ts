@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { formatInvoiceDate } from '../../utils/invoices';
+import { getPaymentTermsDate } from '../../utils/invoices';
 const mail = require('@sendgrid/mail');
 
 mail.setApiKey(process.env.EMAIL_SERVER_PASSWORD)
@@ -11,9 +11,9 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     switch (req.method) {
       case 'POST':
         const body = JSON.parse(req.body);
+        console.log(body.invoice.invoiceDate.toString().slice(0, 10))
         const message = `
-
-          You have until ${formatInvoiceDate(body.invoice.invoiceDate)} to pay this invoice !\r\n
+          You have until ${getPaymentTermsDate(body.invoice.invoiceDate.toString().slice(0, 10), body.invoice.paymentTerms)} to pay this invoice !\r\n
           Items:\r\n
           Name Qty Price Total
           ${body.invoice.items.map((item: Item) => `\r\n${item.name} ${item.quantity} ${item.price} £ ${item.total}`)}
