@@ -17,8 +17,6 @@ export const getInvoiceById = async (id: string) => {
 }
 
 export const getInvoices = async (userId: string) => {
-  /* const invoices = await prisma.invoice.findMany({});
-  return invoices; */
   const invoices = await prisma.invoice.findMany({
     where: {
       userId,
